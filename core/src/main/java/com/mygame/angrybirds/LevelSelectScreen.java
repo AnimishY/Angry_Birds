@@ -95,6 +95,7 @@ public class LevelSelectScreen extends ScreenAdapter {
         level2Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 2 selected!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level2());
                 return true;
             }
             return false;
@@ -111,6 +112,7 @@ public class LevelSelectScreen extends ScreenAdapter {
         level3Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 3 selected!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level3());
                 return true;
             }
             return false;
