@@ -18,14 +18,14 @@ public class Credits extends ScreenAdapter {
     @Override
     public void show() {
         batch = new SpriteBatch();
-        creditsBackground = new Texture(Gdx.files.internal("angrybirds/background.png")); // Load your background image
+        creditsBackground = new Texture(Gdx.files.internal("angrybirds/Credits_background.png")); // Load your background image
 
         // Initialize the stage
         stage = new Stage();
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
         // Create and set up the back button
-        backButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/Back_button.png"))));
+        backButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/Setting.png"))));
         backButton.setPosition(20, 20); // Positioning at bottom left
         backButton.setSize(200, 100); // Set button size
 

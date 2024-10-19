@@ -16,9 +16,10 @@ public class Settings extends ScreenAdapter {
     private Texture settingsBackground; // Background for the settings screen
     private Stage stage; // Stage for handling UI elements
     private BitmapFont font; // Font for drawing text
-    private GlyphLayout layout; // Layout for text positioning
+    private GlyphLayout layout; // Layout for measuring text
     private ImageButton backButton; // Back button
     private ImageButton forwardButton; // Forward button
+    private float buttonHeight; // Button height
 
     @Override
     public void show() {
@@ -28,7 +29,7 @@ public class Settings extends ScreenAdapter {
 
     private void initialize() {
         batch = new SpriteBatch();
-        settingsBackground = new Texture(Gdx.files.internal("angrybirds/background.png")); // Load your background image.
+        settingsBackground = new Texture(Gdx.files.internal("angrybirds/Settings_background.png")); // Load your background image.
 
         // Initialize the stage
         stage = new Stage();
@@ -41,10 +42,10 @@ public class Settings extends ScreenAdapter {
 
     private void createButtons() {
         float buttonWidth = 200;
-        float buttonHeight = 100;
+        buttonHeight = 100; // Set button height
 
         // Create Back Button
-        backButton = createButton("ui/Back_button.png", 20, 20, buttonWidth, buttonHeight);
+        backButton = createButton("ui/HomeScreen_word.png", 20, 20, buttonWidth, buttonHeight);
         stage.addActor(backButton);
         backButton.addListener(event -> {
             if (event.isHandled()) {
@@ -56,7 +57,7 @@ public class Settings extends ScreenAdapter {
         });
 
         // Create Forward Button
-        forwardButton = createButton("ui/Select_button.png", Gdx.graphics.getWidth() - buttonWidth - 20, 20, buttonWidth, buttonHeight);
+        forwardButton = createButton("ui/Credits_word.png", Gdx.graphics.getWidth() - buttonWidth - 20, 20, buttonWidth, buttonHeight);
         stage.addActor(forwardButton);
         forwardButton.addListener(event -> {
             if (event.isHandled()) {
@@ -85,6 +86,10 @@ public class Settings extends ScreenAdapter {
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         batch.draw(settingsBackground, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
+
+        // Draw the "Credits" text below the forward button
+
+
         batch.end();
 
         stage.act(delta); // Update the stage

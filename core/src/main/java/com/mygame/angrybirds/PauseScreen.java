@@ -1,5 +1,3 @@
-// PauseScreen.java
-
 package com.mygame.angrybirds;
 
 import com.badlogic.gdx.Gdx;
@@ -7,33 +5,104 @@ import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class PauseScreen extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture pauseBackground;
+    private Texture pauseBackground; // Background for the pause screen
+    private Stage stage; // Stage for handling UI elements
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        pauseBackground = new Texture(Gdx.files.internal("angrybirds/backmenu.jpg")); // Load your pause background image.
+        pauseBackground = new Texture(Gdx.files.internal("angrybirds/PauseScreen_background.png")); // Load your pause background image.
+
+        // Initialize the stage
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage); // Set input processor to the stage
+
+        // Create buttons
+        createButtons();
+    }
+
+    private void createButtons() {
+        float buttonWidth = 200;
+        float buttonHeight = 50;
+        float gap = 10; // Gap between buttons
+        float startX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Center horizontally
+        float startY = Gdx.graphics.getHeight() / 2 + (buttonHeight + gap) * 1; // Start Y position
+
+        // Resume Button
+        ImageButton resumeButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/ResumeButtonforPauseScreen.png"))));
+        resumeButton.setSize(buttonWidth, buttonHeight);
+        resumeButton.setPosition(startX, startY);
+
+        resumeButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Resume clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level1()); // Resume the level
+                return true;
+            }
+            return false;
+        });
+
+        stage.addActor(resumeButton);
+
+        // Save and Exit Button
+        ImageButton saveExitButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/SavenExitButtonforPauseScreen.png"))));
+        saveExitButton.setSize(buttonWidth, buttonHeight);
+        saveExitButton.setPosition(startX, startY - (buttonHeight + gap)); // Position below resume button
+
+        saveExitButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Save and Exit clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelSelectScreen()); // Go to level select screen
+                return true;
+            }
+            return false;
+        });
+
+        stage.addActor(saveExitButton);
+
+        // Home Button
+        ImageButton homeButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/HomeScreen_word.png"))));
+        homeButton.setSize(buttonWidth, buttonHeight);
+        homeButton.setPosition(startX, startY - 2 * (buttonHeight + gap)); // Position below save and exit button
+
+        homeButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Home clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new HomePage()); // Go to home screen
+                return true;
+            }
+            return false;
+        });
+
+        stage.addActor(homeButton);
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.gl.glClearColor(1, 1, 1, 1); // Clear the screen to white.
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(pauseBackground, 0, 0); // Draw the pause screen.
-        // Draw pause options (static).
+
+        // Draw the pause screen background
+        batch.draw(pauseBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw at (0,0) and scale to fit
+
         batch.end();
+
+        stage.act(delta); // Update the stage
+        stage.draw();     // Draw the stage and its actors (buttons)
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         pauseBackground.dispose();
+        stage.dispose(); // Dispose of the stage and its resources
     }
 }
-
-// LevelEndScreen.java follows a similar structure.

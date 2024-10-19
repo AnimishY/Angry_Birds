@@ -31,12 +31,12 @@ public class HomePage extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
         // Load button textures
-        Texture buttonTexture = new Texture(Gdx.files.internal("ui/Select_button.png"));
+        Texture buttonTexture = new Texture(Gdx.files.internal("ui/LevelSelect_word.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(buttonTexture);
 
         // Load new textures for settings and exit buttons
         Texture settingsButtonTexture = new Texture(Gdx.files.internal("ui/Setting.png"));
-        Texture exitButtonTexture = new Texture(Gdx.files.internal("ui/Exit.png.png"));
+        Texture exitButtonTexture = new Texture(Gdx.files.internal("ui/Exit.png"));
 
         TextureRegionDrawable settingsButtonDrawable = new TextureRegionDrawable(settingsButtonTexture);
         TextureRegionDrawable exitButtonDrawable = new TextureRegionDrawable(exitButtonTexture);
@@ -121,26 +121,9 @@ public class HomePage extends ScreenAdapter {
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
 
-        drawTextOnButtons(); // Call method to draw text on buttons
+      // Call method to draw text on buttons
     }
 
-    private void drawTextOnButtons() {
-        batch.begin();
-
-        // Get the button positions and sizes
-        float levelSelectX = levelSelectButton.getX();
-        float buttonHeight = levelSelectButton.getHeight(); // All buttons should have the same height
-        float buttonWidth = levelSelectButton.getWidth();   // All buttons should have the same width
-
-        // Draw text for Level Select button
-        layout.setText(font, "Level Select");
-        font.draw(batch, layout, levelSelectX + (buttonWidth - layout.width) / 2, levelSelectButton.getY() + (buttonHeight + layout.height) / 2);
-
-        // No text for Settings button because it's now an image
-        // No text for Exit button because it's now an image
-
-        batch.end();
-    }
 
     @Override
     public void dispose() {
