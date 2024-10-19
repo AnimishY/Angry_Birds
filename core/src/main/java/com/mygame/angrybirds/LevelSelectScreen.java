@@ -36,7 +36,7 @@ public class LevelSelectScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
         // Load the back button texture
-        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/Back_button.png")); // Ensure you have a back button texture
+        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/HomeScreen_word.png")); // Ensure you have a back button texture
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
 
         // Set back button size and position (Bottom left corner)
@@ -52,7 +52,6 @@ public class LevelSelectScreen extends ScreenAdapter {
         backButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Back clicked!");
-                // Transition to HomePage
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new HomePage());
                 return true; // Event handled
             }
@@ -75,14 +74,16 @@ public class LevelSelectScreen extends ScreenAdapter {
         level1Button = new ImageButton(new TextureRegionDrawable(level1Texture));
         level1Button.setSize(buttonWidth, buttonHeight);
         level1Button.setPosition(startX, startY);
+
         level1Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 1 selected!");
-                // Handle Level 1 selection
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level1()); // Load Level 1 screen
                 return true;
             }
             return false;
         });
+
         stage.addActor(level1Button);
 
         // Level 2 Button
@@ -90,14 +91,15 @@ public class LevelSelectScreen extends ScreenAdapter {
         level2Button = new ImageButton(new TextureRegionDrawable(level2Texture));
         level2Button.setSize(buttonWidth, buttonHeight);
         level2Button.setPosition(startX + (buttonWidth + gap), startY);
+
         level2Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 2 selected!");
-                // Handle Level 2 selection
                 return true;
             }
             return false;
         });
+
         stage.addActor(level2Button);
 
         // Level 3 Button
@@ -105,48 +107,49 @@ public class LevelSelectScreen extends ScreenAdapter {
         level3Button = new ImageButton(new TextureRegionDrawable(level3Texture));
         level3Button.setSize(buttonWidth, buttonHeight);
         level3Button.setPosition(startX + 2 * (buttonWidth + gap), startY);
+
         level3Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 3 selected!");
-                // Handle Level 3 selection
                 return true;
             }
             return false;
         });
+
         stage.addActor(level3Button);
 
-        // Level 4 Button
+        // Level 4 Button (Locked)
         level4Texture = new Texture(Gdx.files.internal("ui/L4L.png"));
         level4Button = new ImageButton(new TextureRegionDrawable(level4Texture));
         level4Button.setSize(buttonWidth, buttonHeight);
         level4Button.setPosition(startX + 3 * (buttonWidth + gap), startY);
+
         level4Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 4 is Locked!");
-                // Handle Level 4 selection
                 return true;
             }
             return false;
         });
+
         stage.addActor(level4Button);
 
-        // Level 5 Button
+        // Level 5 Button (Locked)
         level5Texture = new Texture(Gdx.files.internal("ui/L5L.png"));
         level5Button = new ImageButton(new TextureRegionDrawable(level5Texture));
         level5Button.setSize(buttonWidth, buttonHeight);
         level5Button.setPosition(startX + 4 * (buttonWidth + gap), startY);
+
         level5Button.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level 5 is Locked!");
-                // Handle Level 5 selection
                 return true;
             }
             return false;
         });
+
         stage.addActor(level5Button);
     }
-
-
 
     @Override
     public void render(float delta) {
@@ -174,10 +177,15 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.dispose(); // Dispose of the stage and its resources
 
         // Dispose of individual textures
-        level1Texture.dispose();
-        level2Texture.dispose();
-        level3Texture.dispose();
-        level4Texture.dispose();
-        level5Texture.dispose();
+        if (level1Texture != null)
+            level1Texture.dispose();
+        if (level2Texture != null)
+            level2Texture.dispose();
+        if (level3Texture != null)
+            level3Texture.dispose();
+        if (level4Texture != null)
+            level4Texture.dispose();
+        if (level5Texture != null)
+            level5Texture.dispose();
     }
 }
