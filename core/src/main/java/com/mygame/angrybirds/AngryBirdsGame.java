@@ -3,7 +3,6 @@ package com.mygame.angrybirds;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 
@@ -15,8 +14,8 @@ public class AngryBirdsGame extends Game {
     public void create() {
         batch = new SpriteBatch();
 
-        // Start with the Home Page
-        setScreen(new HomePage()); // Pass reference of AngryBirdsGame to HomePage
+        // Start with the Splash Screen
+        setScreen(new SplashScreen()); // Pass reference of AngryBirdsGame to SplashScreen
     }
 
     @Override

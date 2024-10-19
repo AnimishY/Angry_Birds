@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -13,6 +15,9 @@ public class Settings extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture settingsBackground; // Background for the settings screen
     private Stage stage; // Stage for handling UI elements
+    private BitmapFont font; // Font for drawing text
+    private GlyphLayout layout; // Layout for text positioning
+    private ImageButton backButton;
 
     @Override
     public void show() {
@@ -23,17 +28,21 @@ public class Settings extends ScreenAdapter {
         stage = new Stage();
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
+        // Load font for button text
+        font = new BitmapFont(); // Default LibGDX font, you can use your custom font if needed
+        layout = new GlyphLayout(); // Layout for measuring text
+
         // Load back button texture
-        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/button.png")); // Ensure you have a back button texture
-        ImageButton backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
+        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/Back_button.png")); // Ensure you have a back button texture
+        backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
 
-        // Set button size and position
-        float buttonWidth = 100;
-        float buttonHeight = 50;
+        // Set button size and position (Bottom left corner)
+        float buttonWidth = 200;
+        float buttonHeight = 100;
         backButton.setSize(buttonWidth, buttonHeight);
-        backButton.setPosition(20, Gdx.graphics.getHeight() - buttonHeight - 20); // Position at top left corner
+        backButton.setPosition(20, 20); // Bottom left corner
 
-        // Add button to the stage
+        // Add back button to the stage
         stage.addActor(backButton);
 
         // Add listener for back button click
@@ -61,16 +70,19 @@ public class Settings extends ScreenAdapter {
 
         batch.draw(settingsBackground, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
 
+
         batch.end();
 
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
     }
 
+
     @Override
     public void dispose() {
         batch.dispose();
         settingsBackground.dispose();
         stage.dispose(); // Dispose of the stage and its resources
+        font.dispose();  // Dispose of font resource
     }
 }

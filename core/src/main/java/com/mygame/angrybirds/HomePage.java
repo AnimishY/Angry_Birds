@@ -18,8 +18,8 @@ public class HomePage extends ScreenAdapter {
     private BitmapFont font; // Font for button labels
     private GlyphLayout layout; // For measuring text dimensions
     private ImageButton levelSelectButton; // Level Select button
-    private ImageButton settingsButton;      // Settings button
-    private ImageButton exitButton;          // Exit button
+    private ImageButton settingsButton;      // Settings button with new source
+    private ImageButton exitButton;          // Exit button with new source
 
     @Override
     public void show() {
@@ -31,13 +31,20 @@ public class HomePage extends ScreenAdapter {
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
         // Load button textures
-        Texture buttonTexture = new Texture(Gdx.files.internal("ui/button.png"));
+        Texture buttonTexture = new Texture(Gdx.files.internal("ui/Select_button.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(buttonTexture);
 
+        // Load new textures for settings and exit buttons
+        Texture settingsButtonTexture = new Texture(Gdx.files.internal("ui/Setting.png"));
+        Texture exitButtonTexture = new Texture(Gdx.files.internal("ui/Exit.png.png"));
+
+        TextureRegionDrawable settingsButtonDrawable = new TextureRegionDrawable(settingsButtonTexture);
+        TextureRegionDrawable exitButtonDrawable = new TextureRegionDrawable(exitButtonTexture);
+
         // Create buttons
-        levelSelectButton = new ImageButton(buttonDrawable); // Button for Level Select
-        settingsButton = new ImageButton(buttonDrawable);      // Button for Settings
-        exitButton = new ImageButton(buttonDrawable);          // Button for Exit
+        levelSelectButton = new ImageButton(buttonDrawable);  // Button for Level Select
+        settingsButton = new ImageButton(settingsButtonDrawable); // Settings button with new image
+        exitButton = new ImageButton(exitButtonDrawable);      // Exit button with new image
 
         // Set button sizes
         float buttonWidth = 200;
@@ -122,8 +129,6 @@ public class HomePage extends ScreenAdapter {
 
         // Get the button positions and sizes
         float levelSelectX = levelSelectButton.getX();
-        float settingsX = settingsButton.getX();
-        float exitX = exitButton.getX();
         float buttonHeight = levelSelectButton.getHeight(); // All buttons should have the same height
         float buttonWidth = levelSelectButton.getWidth();   // All buttons should have the same width
 
@@ -131,13 +136,8 @@ public class HomePage extends ScreenAdapter {
         layout.setText(font, "Level Select");
         font.draw(batch, layout, levelSelectX + (buttonWidth - layout.width) / 2, levelSelectButton.getY() + (buttonHeight + layout.height) / 2);
 
-        // Draw text for Settings button
-        layout.setText(font, "Settings");
-        font.draw(batch, layout, settingsX + (buttonWidth - layout.width) / 2, settingsButton.getY() + (buttonHeight + layout.height) / 2);
-
-        // Draw text for Exit button
-        layout.setText(font, "Exit");
-        font.draw(batch, layout, exitX + (buttonWidth - layout.width) / 2, exitButton.getY() + (buttonHeight + layout.height) / 2);
+        // No text for Settings button because it's now an image
+        // No text for Exit button because it's now an image
 
         batch.end();
     }

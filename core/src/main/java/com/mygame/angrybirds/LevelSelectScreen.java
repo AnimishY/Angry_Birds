@@ -8,41 +8,44 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class LevelSelectScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture levelBackground; // Background for the level selection screen
     private Stage stage; // Stage for handling UI elements
-    private BitmapFont font; // Font for drawing text
-    private GlyphLayout layout; // Layout for measuring text dimensions
+
+    private Texture level1Texture;
+    private Texture level2Texture;
+    private Texture level3Texture;
+    private Texture level4Texture;
+    private Texture level5Texture;
+
+    private ImageButton level1Button;
+    private ImageButton level2Button;
+    private ImageButton level3Button;
+    private ImageButton level4Button;
+    private ImageButton level5Button;
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        levelBackground = new Texture(Gdx.files.internal("angrybirds/background.png")); // Load your background image.
+        levelBackground = new Texture(Gdx.files.internal("angrybirds/LevelSelectScreen.png")); // Load the background image
 
         // Initialize the stage
         stage = new Stage();
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
-        // Load font for button text
-        font = new BitmapFont(); // Load your desired font here (make sure to provide a font file if needed)
-        layout = new GlyphLayout(); // Initialize layout for measuring text
-
-        // Load back button texture
-        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/button.png")); // Ensure you have a back button texture
+        // Load the back button texture
+        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/Back_button.png")); // Ensure you have a back button texture
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
 
-        // Set back button size and position
-        float backButtonWidth = 100;
-        float backButtonHeight = 50;
+        // Set back button size and position (Bottom left corner)
+        float backButtonWidth = 200;
+        float backButtonHeight = 100;
         backButton.setSize(backButtonWidth, backButtonHeight);
-        backButton.setPosition(20, Gdx.graphics.getHeight() - backButtonHeight - 20); // Position at top left corner
+        backButton.setPosition(20, 20); // Position at the bottom left corner
 
-        // Add button to the stage
+        // Add back button to the stage
         stage.addActor(backButton);
 
         // Add listener for back button click
@@ -56,7 +59,7 @@ public class LevelSelectScreen extends ScreenAdapter {
             return false; // Event not handled
         });
 
-        // Create level buttons (1-10)
+        // Manually create level buttons with their own textures
         createLevelButtons();
     }
 
@@ -67,46 +70,83 @@ public class LevelSelectScreen extends ScreenAdapter {
         float startX = (Gdx.graphics.getWidth() - (5 * buttonWidth + 4 * gap)) / 2; // Centering horizontally
         float startY = Gdx.graphics.getHeight() / 2; // Start Y position
 
-        for (int i = 1; i <= 5; i++) { // Changed to 10 for levels 1-10
-            ImageButton levelButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/button.png"))));
-            levelButton.setSize(buttonWidth, buttonHeight);
-            levelButton.setPosition(startX + ((i - 1) % 5) * (buttonWidth + gap), startY - ((i - 1) / 5) * (buttonHeight + gap)); // Arrange in rows of 5
+        // Level 1 Button
+        level1Texture = new Texture(Gdx.files.internal("ui/L1.png"));
+        level1Button = new ImageButton(new TextureRegionDrawable(level1Texture));
+        level1Button.setSize(buttonWidth, buttonHeight);
+        level1Button.setPosition(startX, startY);
+        level1Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Level 1 selected!");
+                // Handle Level 1 selection
+                return true;
+            }
+            return false;
+        });
+        stage.addActor(level1Button);
 
-            final int levelNumber = i; // Final variable for listener
-            levelButton.addListener(event -> {
-                if (event.isHandled()) {
-                    System.out.println("Level " + levelNumber + " selected!");
-                    // Here you would transition to the specific level screen
-                    // Replace `LevelScreen` with the actual screen class for the level
+        // Level 2 Button
+        level2Texture = new Texture(Gdx.files.internal("ui/L2.png"));
+        level2Button = new ImageButton(new TextureRegionDrawable(level2Texture));
+        level2Button.setSize(buttonWidth, buttonHeight);
+        level2Button.setPosition(startX + (buttonWidth + gap), startY);
+        level2Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Level 2 selected!");
+                // Handle Level 2 selection
+                return true;
+            }
+            return false;
+        });
+        stage.addActor(level2Button);
 
-                    return true; // Event handled
-                }
-                return false; // Event not handled
-            });
+        // Level 3 Button
+        level3Texture = new Texture(Gdx.files.internal("ui/L3.png"));
+        level3Button = new ImageButton(new TextureRegionDrawable(level3Texture));
+        level3Button.setSize(buttonWidth, buttonHeight);
+        level3Button.setPosition(startX + 2 * (buttonWidth + gap), startY);
+        level3Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Level 3 selected!");
+                // Handle Level 3 selection
+                return true;
+            }
+            return false;
+        });
+        stage.addActor(level3Button);
 
-            stage.addActor(levelButton);
-        }
+        // Level 4 Button
+        level4Texture = new Texture(Gdx.files.internal("ui/L4L.png"));
+        level4Button = new ImageButton(new TextureRegionDrawable(level4Texture));
+        level4Button.setSize(buttonWidth, buttonHeight);
+        level4Button.setPosition(startX + 3 * (buttonWidth + gap), startY);
+        level4Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Level 4 is Locked!");
+                // Handle Level 4 selection
+                return true;
+            }
+            return false;
+        });
+        stage.addActor(level4Button);
+
+        // Level 5 Button
+        level5Texture = new Texture(Gdx.files.internal("ui/L5L.png"));
+        level5Button = new ImageButton(new TextureRegionDrawable(level5Texture));
+        level5Button.setSize(buttonWidth, buttonHeight);
+        level5Button.setPosition(startX + 4 * (buttonWidth + gap), startY);
+        level5Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Level 5 is Locked!");
+                // Handle Level 5 selection
+                return true;
+            }
+            return false;
+        });
+        stage.addActor(level5Button);
     }
 
-    private void drawTextOnButtons() {
-        batch.begin();
 
-        // Get the button positions and sizes
-        float buttonWidth = 100; // Adjust to your button size
-        float buttonHeight = 50;  // Adjust to your button size
-        float gap = 10; // Gap between buttons
-        float startX = (Gdx.graphics.getWidth() - (5 * buttonWidth + 4 * gap)) / 2; // Centering horizontally
-        float startY = Gdx.graphics.getHeight() / 2; // Start Y position
-
-        for (int i = 1; i <= 5; i++) {
-            layout.setText(font, "Level " + i);
-            float x = startX + ((i - 1) % 5) * (buttonWidth + gap) + (buttonWidth - layout.width) / 2;
-            float y = startY - ((i - 1) / 5) * (buttonHeight + gap) + (buttonHeight + layout.height) / 2;
-            font.draw(batch, layout, x, y);
-        }
-
-        batch.end();
-    }
 
     @Override
     public void render(float delta) {
@@ -125,9 +165,6 @@ public class LevelSelectScreen extends ScreenAdapter {
 
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
-
-        // Draw text on buttons after drawing the stage
-        drawTextOnButtons();
     }
 
     @Override
@@ -135,6 +172,12 @@ public class LevelSelectScreen extends ScreenAdapter {
         batch.dispose();
         levelBackground.dispose();
         stage.dispose(); // Dispose of the stage and its resources
-        font.dispose(); // Dispose the font resource
+
+        // Dispose of individual textures
+        level1Texture.dispose();
+        level2Texture.dispose();
+        level3Texture.dispose();
+        level4Texture.dispose();
+        level5Texture.dispose();
     }
 }
