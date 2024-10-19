@@ -17,10 +17,16 @@ public class Settings extends ScreenAdapter {
     private Stage stage; // Stage for handling UI elements
     private BitmapFont font; // Font for drawing text
     private GlyphLayout layout; // Layout for text positioning
-    private ImageButton backButton;
+    private ImageButton backButton; // Back button
+    private ImageButton forwardButton; // Forward button
 
     @Override
     public void show() {
+        initialize(); // Initialize components
+        createButtons(); // Create and set up buttons
+    }
+
+    private void initialize() {
         batch = new SpriteBatch();
         settingsBackground = new Texture(Gdx.files.internal("angrybirds/background.png")); // Load your background image.
 
@@ -31,30 +37,43 @@ public class Settings extends ScreenAdapter {
         // Load font for button text
         font = new BitmapFont(); // Default LibGDX font, you can use your custom font if needed
         layout = new GlyphLayout(); // Layout for measuring text
+    }
 
-        // Load back button texture
-        Texture backButtonTexture = new Texture(Gdx.files.internal("ui/Back_button.png")); // Ensure you have a back button texture
-        backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
-
-        // Set button size and position (Bottom left corner)
+    private void createButtons() {
         float buttonWidth = 200;
         float buttonHeight = 100;
-        backButton.setSize(buttonWidth, buttonHeight);
-        backButton.setPosition(20, 20); // Bottom left corner
 
-        // Add back button to the stage
+        // Create Back Button
+        backButton = createButton("ui/Back_button.png", 20, 20, buttonWidth, buttonHeight);
         stage.addActor(backButton);
-
-        // Add listener for back button click
         backButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Back clicked!");
-                // Transition to HomePage
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new HomePage());
                 return true; // Event handled
             }
             return false; // Event not handled
         });
+
+        // Create Forward Button
+        forwardButton = createButton("ui/Select_button.png", Gdx.graphics.getWidth() - buttonWidth - 20, 20, buttonWidth, buttonHeight);
+        stage.addActor(forwardButton);
+        forwardButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Forward clicked!"); // Debug statement
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Credits());
+                return true; // Event handled
+            }
+            return false; // Event not handled
+        });
+    }
+
+    private ImageButton createButton(String texturePath, float x, float y, float width, float height) {
+        Texture buttonTexture = new Texture(Gdx.files.internal(texturePath)); // Load button texture
+        ImageButton button = new ImageButton(new TextureRegionDrawable(buttonTexture));
+        button.setSize(width, height);
+        button.setPosition(x, y);
+        return button;
     }
 
     @Override
@@ -63,20 +82,14 @@ public class Settings extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-
-        // Draw the background texture scaled to fit the screen dimensions
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
-
         batch.draw(settingsBackground, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
-
-
         batch.end();
 
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
     }
-
 
     @Override
     public void dispose() {
