@@ -41,8 +41,8 @@ public class Settings extends ScreenAdapter {
     }
 
     private void createButtons() {
-        float buttonWidth = 200;
-        buttonHeight = 100; // Set button height
+        float buttonWidth = 300;
+        buttonHeight = 200; // Set button height
 
         // Create Back Button
         backButton = createButton("ui/HomeScreen_word.png", 20, 20, buttonWidth, buttonHeight);

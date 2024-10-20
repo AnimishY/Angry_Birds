@@ -35,16 +35,17 @@ public class LevelEndScreen extends ScreenAdapter {
     }
 
     private void createButtons() {
-        float buttonWidth = 200;
-        float buttonHeight = 50;
-        float gap = 10; // Gap between buttons
-        float startX = Gdx.graphics.getWidth() - buttonWidth - 20; // Right aligned
-        float startY = 2; // Bottom of the screen
+        // Updated button size: Doubling the original size (400x100)
+        float buttonWidth = 400;
+        float buttonHeight = 100;
+        float gap = 20; // Increased gap between buttons for better spacing
+        float startX = Gdx.graphics.getWidth() - buttonWidth - 40; // Adjusted right-aligned positioning
+        float startY = 50; // Positioned slightly higher from the bottom of the screen
 
         // Button to go back to Level Select
         ImageButton levelSelectButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/LevelSelect_word.png"))));
         levelSelectButton.setSize(buttonWidth, buttonHeight);
-        levelSelectButton.setPosition(startX, startY);
+        levelSelectButton.setPosition(startX, startY-60);
 
         levelSelectButton.addListener(event -> {
             if (event.isHandled()) {
@@ -60,7 +61,7 @@ public class LevelEndScreen extends ScreenAdapter {
         // Button to go back to Home Screen
         ImageButton homeScreenButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/HomeScreen_word.png"))));
         homeScreenButton.setSize(buttonWidth, buttonHeight);
-        homeScreenButton.setPosition(startX, startY + buttonHeight + gap);
+        homeScreenButton.setPosition(startX, startY + buttonHeight + gap-60);
 
         homeScreenButton.addListener(event -> {
             if (event.isHandled()) {
@@ -78,7 +79,7 @@ public class LevelEndScreen extends ScreenAdapter {
         restartLevelButton.setSize(buttonWidth, buttonHeight);
 
         float centerX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Center horizontally
-        float centerY = (Gdx.graphics.getHeight() - buttonHeight)/ 10; // Center vertically
+        float centerY = (Gdx.graphics.getHeight() - buttonHeight) / 10; // Center vertically
 
         restartLevelButton.setPosition(centerX, centerY);
 

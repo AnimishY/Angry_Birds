@@ -71,12 +71,16 @@ public class Level1 extends ScreenAdapter {
 
         batch.draw(background, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
 
-        // Draw the ground at the bottom of the screen
-        batch.draw(ground, 0, 0); // Positioning at (0,0) - bottom of the screen
+        // Draw the ground twice, side by side
+        float groundWidth = ground.getWidth();
+        float groundHeight = ground.getHeight();
+
+        batch.draw(ground, 0, 0); // First ground at (0,0)
+        batch.draw(ground, groundWidth, 0); // Second ground adjacent to the first one, starting at the end of the first ground
 
         // Draw the slingshot above the ground with reduced size
         float slingshotXPosition = (screenWidth - slingshot.getWidth() / 10) / 7; // Center horizontally
-        float slingshotYPosition = ground.getHeight() - 30; // Position it right above the ground
+        float slingshotYPosition = groundHeight - 30; // Position it right above the ground
 
         // Scale down slingshot size by a factor of 7
         float slingshotWidth = slingshot.getWidth() / 7;
@@ -90,7 +94,7 @@ public class Level1 extends ScreenAdapter {
 
         // Position the glasses towards the right side of the screen
         float glassXPosition1 = screenWidth - 2 * glassWidth - 50; // 50px padding from the right
-        float glassYPosition = ground.getHeight() - 32; // Place it just above the ground
+        float glassYPosition = groundHeight - 32; // Place it just above the ground
 
         // Draw the two glass textures, side by side
         batch.draw(glass, glassXPosition1, glassYPosition, glassWidth, glassHeight); // First glass
@@ -123,6 +127,7 @@ public class Level1 extends ScreenAdapter {
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
     }
+
 
     @Override
     public void dispose() {
