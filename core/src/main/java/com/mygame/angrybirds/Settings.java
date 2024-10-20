@@ -61,20 +61,55 @@ public class Settings extends ScreenAdapter {
         stage.addActor(forwardButton);
         forwardButton.addListener(event -> {
             if (event.isHandled()) {
-                System.out.println("Forward clicked!"); // Debug statement
+                System.out.println("Forward clicked!");
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Credits());
-                return true; // Event handled
+                return true;
             }
-            return false; // Event not handled
+            return false;
+        });
+
+        // Center Buttons for User Profile and Reset Progress
+        float centerX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Center horizontally
+        float centerY = (3*(Gdx.graphics.getHeight() - (buttonHeight * 2 + 10))) / 4; // Center vertically
+
+        // User Profile Button
+        ImageButton userProfileButton = createButton("ui/ChangeUser_button.png", centerX, centerY, buttonWidth, buttonHeight);
+        stage.addActor(userProfileButton);
+        userProfileButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("User Profile clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new UserProfile());
+                // Navigate to User Profile screen
+                return true;
+            }
+            return false;
+        });
+
+        // Reset Progress Button
+        ImageButton resetProgressButton = createButton("ui/ResetGame_button.png", centerX, centerY - (buttonHeight + 10), buttonWidth, buttonHeight);
+        stage.addActor(resetProgressButton);
+        resetProgressButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Reset Progress clicked!");
+                resetGameProgress(); // Reset game progress and navigate to splash screen or home screen
+                return true;
+            }
+            return false;
         });
     }
 
     private ImageButton createButton(String texturePath, float x, float y, float width, float height) {
-        Texture buttonTexture = new Texture(Gdx.files.internal(texturePath)); // Load button texture
+        Texture buttonTexture = new Texture(Gdx.files.internal(texturePath));
         ImageButton button = new ImageButton(new TextureRegionDrawable(buttonTexture));
         button.setSize(width, height);
         button.setPosition(x, y);
         return button;
+    }
+
+    private void resetGameProgress() {
+        System.out.println("Game progress reset.");
+        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new SplashScreen()); // Navigate to splash screen before going to home screen or level select.
+        // Implement actual reset logic here (e.g., clearing saved data)
     }
 
     @Override
@@ -83,24 +118,23 @@ public class Settings extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
+
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
-        batch.draw(settingsBackground, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
 
-        // Draw the "Credits" text below the forward button
-
+        batch.draw(settingsBackground, 0, 0, screenWidth, screenHeight);
 
         batch.end();
 
-        stage.act(delta); // Update the stage
-        stage.draw();     // Draw the stage and its actors (buttons)
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         settingsBackground.dispose();
-        stage.dispose(); // Dispose of the stage and its resources
-        font.dispose();  // Dispose of font resource
+        stage.dispose();
+        font.dispose();
     }
 }

@@ -13,6 +13,11 @@ public class PauseScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture pauseBackground; // Background for the pause screen
     private Stage stage; // Stage for handling UI elements
+    private int currentLevel; // Variable to hold the current level
+
+    public PauseScreen(int currentLevel) {
+        this.currentLevel = currentLevel; // Set the current level from which this screen is accessed
+    }
 
     @Override
     public void show() {
@@ -81,6 +86,22 @@ public class PauseScreen extends ScreenAdapter {
         });
 
         stage.addActor(homeButton);
+
+        // Level End Button
+        ImageButton levelEndButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/LevelEnd_button.png")))); // Ensure you have a level end button texture
+        levelEndButton.setSize(buttonWidth, buttonHeight);
+        levelEndButton.setPosition(startX, startY - 3 * (buttonHeight + gap)); // Position below home button
+
+        levelEndButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Go to Level End clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(currentLevel)); // Pass current level to Level End screen
+                return true;
+            }
+            return false;
+        });
+
+        stage.addActor(levelEndButton);
     }
 
     @Override
