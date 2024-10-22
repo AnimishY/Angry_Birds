@@ -1,36 +1,59 @@
-# ANGRY_BIRDS
+# Angry Birds Game - AP Edition
+By Pranshu (2023385) & Animish Yadav (2023089)
 
-A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
+This project is a clone of the classic Angry Birds game built using the [LibGDX](https://libgdx.com/) game development framework and Gradle for project management.
 
-This project was generated with a template including simple application launchers and an `ApplicationAdapter` extension that draws libGDX logo.
+## Table of Contents
+- [Getting Started](#getting-started)
+- [Project Structure](#project-structure)
+- [Building and Running](#building-and-running)
+- [Controls](#controls)
+- [Gameplay](#gameplay)
 
-## Platforms
+## Getting Started
 
-- `core`: Main module with the application logic shared by all platforms.
-- `lwjgl3`: Primary desktop platform using LWJGL3; was called 'desktop' in older docs.
-- `html`: Web platform using GWT and WebGL. Supports only Java projects.
+### Prerequisites
+Ensure you have the following installed on your system:
+- **Java Development Kit (JDK)** (version 8 or higher)
+- **Gradle** (optional, if you don't want to use the wrapper)
 
-## Gradle
+### Installation
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Pranshu-iiitd/Angry_Birds.git
+   cd Angry_Birds
+   ```
 
-This project uses [Gradle](https://gradle.org/) to manage dependencies.
-The Gradle wrapper was included, so you can run Gradle tasks using `gradlew.bat` or `./gradlew` commands.
-Useful Gradle tasks and flags:
+2. Sync the project dependencies:
+   ```bash
+   ./gradlew build
+   ```
 
-- `--continue`: when using this flag, errors will not stop the tasks from running.
-- `--daemon`: thanks to this flag, Gradle daemon will be used to run chosen tasks.
-- `--offline`: when using this flag, cached dependency archives will be used.
-- `--refresh-dependencies`: this flag forces validation of all dependencies. Useful for snapshot versions.
-- `build`: builds sources and archives of every project.
-- `cleanEclipse`: removes Eclipse project data.
-- `cleanIdea`: removes IntelliJ project data.
-- `clean`: removes `build` folders, which store compiled classes and built archives.
-- `eclipse`: generates Eclipse project data.
-- `html:dist`: compiles GWT sources. The compiled application can be found at `html/build/dist`: you can use any HTTP server to deploy it.
-- `html:superDev`: compiles GWT sources and runs the application in SuperDev mode. It will be available at [localhost:8080/html](http://localhost:8080/html). Use only during development.
-- `idea`: generates IntelliJ project data.
-- `lwjgl3:jar`: builds application's runnable jar, which can be found at `lwjgl3/build/libs`.
-- `lwjgl3:run`: starts the application.
-- `test`: runs unit tests (if any).
+## Project Structure
 
-Note that most tasks that are not specific to a single project can be run with `name:` prefix, where the `name` should be replaced with the ID of a specific project.
-For example, `core:clean` removes `build` folder only from the `core` project.
+- `core/` : Contains game logic, assets, and core mechanics of the game.
+- `assets/` : Game assets (sprites, sounds, etc.).
+- `gradle/` : Gradle wrapper and build configuration files.
+
+## Building and Running
+
+To build and run the game on your desktop:
+```bash
+./gradlew desktop:run
+```
+
+## Controls
+- **Mouse Drag**: Pull the slingshot.
+- **Release Mouse**: Launch the bird.
+
+## Gameplay
+
+Your objective is to use a slingshot to launch birds and destroy structures containing enemy pigs. You must destroy all pigs to complete the level.
+
+### Features:
+- Physics-based gameplay.
+- Multiple bird types with different abilities.
+- Multiple pig types with different strength.
+- Support for 2 users.
+- Multiple levels with increasing difficulty.
+- Locked Levels are also available which unlocks are completing initial levels.
