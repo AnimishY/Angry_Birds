@@ -68,7 +68,7 @@ public class Level2 extends ScreenAdapter {
 
         // Draw background and ground
         batch.draw(background, 0, 0, screenWidth, screenHeight);
-        batch.draw(ground, 0, 0);
+        batch.draw(ground, 0, 0, screenWidth, ground.getHeight());
 
         // Draw slingshot
         float slingshotXPosition = (screenWidth - slingshot.getWidth() / 10) / 5;

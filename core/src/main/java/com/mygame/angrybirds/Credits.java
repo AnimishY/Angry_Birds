@@ -26,7 +26,7 @@ public class Credits extends ScreenAdapter {
 
         // Create and set up the back button
         backButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/Setting.png"))));
-        backButton.setPosition(20, 20); // Positioning at bottom left
+        backButton.setPosition(20, 170); // Positioning at bottom left
         backButton.setSize(200, 100); // Set button size
 
         // Add listener for the back button click

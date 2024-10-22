@@ -47,8 +47,8 @@ public class HomePage extends ScreenAdapter {
         exitButton = new ImageButton(exitButtonDrawable);      // Exit button with new image
 
         // Set button sizes
-        float buttonWidth = 200;
-        float buttonHeight = 100;
+        float buttonWidth = 300;
+        float buttonHeight = 200;
 
         levelSelectButton.setSize(buttonWidth, buttonHeight);
         settingsButton.setSize(buttonWidth, buttonHeight);
@@ -59,9 +59,9 @@ public class HomePage extends ScreenAdapter {
         float totalWidth = (3 * buttonWidth) + (2 * gap); // Total width of all buttons plus gaps
         float startX = (Gdx.graphics.getWidth() - totalWidth) / 2; // Centering the buttons horizontally
 
-        levelSelectButton.setPosition(startX, Gdx.graphics.getHeight() / 2 - 200); // Move buttons down to -200
-        settingsButton.setPosition(startX + buttonWidth + gap, Gdx.graphics.getHeight() / 2 - 200);
-        exitButton.setPosition(startX + 2 * (buttonWidth + gap), Gdx.graphics.getHeight() / 2 - 200);
+        levelSelectButton.setPosition(startX, Gdx.graphics.getHeight() / 2 - 400); // Move buttons down to -200
+        settingsButton.setPosition(startX + buttonWidth + gap, Gdx.graphics.getHeight() / 2 - 400);
+        exitButton.setPosition(startX + 2 * (buttonWidth + gap), Gdx.graphics.getHeight() / 2 - 400);
 
         // Add buttons to the stage
         stage.addActor(levelSelectButton);

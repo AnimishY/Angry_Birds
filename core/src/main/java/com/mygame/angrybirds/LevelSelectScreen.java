@@ -40,8 +40,8 @@ public class LevelSelectScreen extends ScreenAdapter {
         ImageButton backButton = new ImageButton(new TextureRegionDrawable(backButtonTexture));
 
         // Set back button size and position (Bottom left corner)
-        float backButtonWidth = 200;
-        float backButtonHeight = 100;
+        float backButtonWidth = 300;
+        float backButtonHeight = 200;
         backButton.setSize(backButtonWidth, backButtonHeight);
         backButton.setPosition(20, 20); // Position at the bottom left corner
 
@@ -63,8 +63,8 @@ public class LevelSelectScreen extends ScreenAdapter {
     }
 
     private void createLevelButtons() {
-        float buttonWidth = 100;
-        float buttonHeight = 50;
+        float buttonWidth = 200;
+        float buttonHeight = 100;
         float gap = 10; // Gap between buttons
         float startX = (Gdx.graphics.getWidth() - (5 * buttonWidth + 4 * gap)) / 2; // Centering horizontally
         float startY = Gdx.graphics.getHeight() / 2; // Start Y position

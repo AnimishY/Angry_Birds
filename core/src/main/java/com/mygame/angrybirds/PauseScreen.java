@@ -33,9 +33,10 @@ public class PauseScreen extends ScreenAdapter {
     }
 
     private void createButtons() {
-        float buttonWidth = 200;
-        float buttonHeight = 50;
-        float gap = 10; // Gap between buttons
+        // Double the original width and height
+        float buttonWidth = 400; // Original width (200) * 2
+        float buttonHeight = 100; // Original height (50) * 2
+        float gap = 20; // Increased gap for better spacing between buttons
         float startX = (Gdx.graphics.getWidth() - buttonWidth) / 2; // Center horizontally
         float startY = Gdx.graphics.getHeight() / 2 + (buttonHeight + gap) * 1; // Start Y position
 

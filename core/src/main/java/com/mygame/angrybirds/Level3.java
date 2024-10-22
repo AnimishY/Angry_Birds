@@ -59,7 +59,7 @@ public class Level3 extends ScreenAdapter {
         float screenHeight = Gdx.graphics.getHeight();
 
         batch.draw(background, 0, 0, screenWidth, screenHeight);
-        batch.draw(ground, 0, 0);
+        batch.draw(ground, 0, 0, screenWidth, ground.getHeight());
 
         float slingshotXPosition = (screenWidth - slingshot.getWidth() / 10) / 7;
         float slingshotYPosition = ground.getHeight() - 30;
