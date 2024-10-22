@@ -9,6 +9,7 @@ This project is a clone of the classic Angry Birds game built using the [LibGDX]
 - [Building and Running](#building-and-running)
 - [Controls](#controls)
 - [Gameplay](#gameplay)
+- [Credits](#credits)
 
 ## Getting Started
 
@@ -57,3 +58,8 @@ Your objective is to use a slingshot to launch birds and destroy structures cont
 - Support for 2 users.
 - Multiple levels with increasing difficulty.
 - Locked Levels are also available which unlocks are completing initial levels.
+
+## Credits
+- https://angrybirds.fandom.com/ -  For Game Assets
+- https://gamefromscratch.com/libgdx-tutorial-series/ - Initial Tutorials
+-
