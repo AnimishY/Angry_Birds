@@ -26,7 +26,7 @@ public class Level1 extends ScreenAdapter {
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png")); // Load the background image
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png")); // Load the ground image
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png")); // Load the slingshot image
-        glass = new Texture(Gdx.files.internal("ui/Glass.jpg")); // Load the glass texture
+        glass = new Texture(Gdx.files.internal("ui/Glass.png")); // Load the glass texture
         corporalPig = new Texture(Gdx.files.internal("ch/MinionPig.png")); // Load the Corporal Pig texture
         redBird = new Texture(Gdx.files.internal("ch/Red.png")); // Load the Red Bird texture
 

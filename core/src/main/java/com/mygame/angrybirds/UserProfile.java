@@ -32,8 +32,8 @@ public class UserProfile extends ScreenAdapter {
         float screenHeight = Gdx.graphics.getHeight();
 
         // New dimensions for the images (width and height reduced by a factor of 2)
-        float imageWidth = 500; // Half of 500
-        float imageHeight = 120; // Half of 100
+        float imageWidth = 1000; // Half of 500
+        float imageHeight = 200; // Half of 100
 
         // Load two center images
         Texture image1Texture = new Texture(Gdx.files.internal("ui/User1.png")); // Ensure you have this texture

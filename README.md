@@ -62,4 +62,4 @@ Your objective is to use a slingshot to launch birds and destroy structures cont
 ## Credits
 - https://angrybirds.fandom.com/ -  For Game Assets
 - https://gamefromscratch.com/libgdx-tutorial-series/ - Initial Tutorials
--
+-https://www.canva.com/en_in/ - For helping in image modification.
