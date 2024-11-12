@@ -2,6 +2,7 @@ package com.mygame.angrybirds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,7 +16,7 @@ import com.mygame.angrybirds.Material.Glass;
 
 public class Level1 extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture background, ground, slingshot;
+    private Texture background, ground, slingshot, pauseButton;
     private Stage stage;
     private RedB redBird;
     private MinionPig minionPig;
@@ -23,6 +24,7 @@ public class Level1 extends ScreenAdapter {
     private boolean isDragging;
     private Vector2 launchStart, launchEnd, birdStartPosition;
     private Array<Vector2> trajectoryPoints;
+    private InputMultiplexer inputMultiplexer;
 
     @Override
     public void show() {
@@ -30,18 +32,29 @@ public class Level1 extends ScreenAdapter {
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
+        pauseButton = new Texture(Gdx.files.internal("ui/Pause.png"));
 
-        birdStartPosition = new Vector2(75, ground.getHeight() + 18);
+        birdStartPosition = new Vector2(75, ground.getHeight() + 22);
         redBird = new RedB(birdStartPosition.x, birdStartPosition.y);
-        minionPig = new MinionPig(1120, ground.getHeight()-10 );
-        glass1 = new Glass(1050, ground.getHeight()-30 );
-        glass2 = new Glass(1150, ground.getHeight() -30);
+        minionPig = new MinionPig(1120, ground.getHeight() - 10);
+        glass1 = new Glass(1050, ground.getHeight() - 30);
+        glass2 = new Glass(1150, ground.getHeight() - 30);
 
         stage = new Stage();
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
                 Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+
+                //Check if the pause button is pressed
+                float newWidth = 100;
+                float newHeight = 100;
+
+                if (touchPos.x >= Gdx.graphics.getWidth() - newWidth - 10 && touchPos.y >= Gdx.graphics.getHeight() - newHeight - 10) {
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(1));
+                    return true;
+                }
+
                 if (redBird.getBounds().contains(touchPos)) {
                     isDragging = true;
                     launchStart = touchPos;
@@ -73,7 +86,7 @@ public class Level1 extends ScreenAdapter {
             }
         });
 
-        trajectoryPoints = new Array<>();
+        trajectoryPoints = new Array<Vector2>();
     }
 
     @Override
@@ -103,6 +116,11 @@ public class Level1 extends ScreenAdapter {
                 batch.draw(redBird.getTexture(), point.x, point.y, 5, 5);
             }
         }
+
+        // Draw pause button
+        float newWidth = 100;
+        float newHeight = 100;
+        batch.draw(pauseButton, Gdx.graphics.getWidth() - newWidth - 10, Gdx.graphics.getHeight() - newHeight - 10, newWidth, newHeight);
 
         batch.end();
         stage.act(delta);

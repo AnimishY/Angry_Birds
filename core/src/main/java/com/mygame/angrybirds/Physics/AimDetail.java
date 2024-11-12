@@ -3,15 +3,20 @@ package com.mygame.angrybirds.Physics;
 public class AimDetail {
     private float velocityX, velocityY;
     private boolean launched;
+    private float initialX, initialY;  // Store initial position
+    private float time;  // Track time since launch
+    private static final float GRAVITY = 19.8f;  // Gravity constant
 
     public AimDetail(float initialVelocityX, float initialVelocityY) {
         this.velocityX = initialVelocityX;
         this.velocityY = initialVelocityY;
         this.launched = false;
+        this.time = 0;
     }
 
     public void launch() {
         this.launched = true;
+        this.time = 0;
     }
 
     public boolean isLaunched() {
@@ -23,19 +28,19 @@ public class AimDetail {
     }
 
     public float getVelocityY() {
-        return velocityY;
+        // Current vertical velocity = initial velocity - gt
+        return velocityY - (GRAVITY * time);
     }
 
     public void update(float deltaTime) {
         if (launched) {
-            // Apply gravity to vertical velocity
-            velocityY -= 9.8 * deltaTime;
+            time += deltaTime;
         }
     }
 
-    // Sets new velocities for both x and y directions
     public void setVelocity(float velocityX, float velocityY) {
         this.velocityX = velocityX;
         this.velocityY = velocityY;
+        this.time = 0;
     }
 }
