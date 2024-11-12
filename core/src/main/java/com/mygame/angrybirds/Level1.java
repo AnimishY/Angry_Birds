@@ -31,11 +31,11 @@ public class Level1 extends ScreenAdapter {
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
-        birdStartPosition = new Vector2(120, ground.getHeight() + 20);
+        birdStartPosition = new Vector2(75, ground.getHeight() + 18);
         redBird = new RedB(birdStartPosition.x, birdStartPosition.y);
-        minionPig = new MinionPig(900, ground.getHeight() + 70);
-        glass1 = new Glass(850, ground.getHeight() + 30);
-        glass2 = new Glass(950, ground.getHeight() + 30);
+        minionPig = new MinionPig(1120, ground.getHeight()-10 );
+        glass1 = new Glass(1050, ground.getHeight()-30 );
+        glass2 = new Glass(1150, ground.getHeight() -30);
 
         stage = new Stage();
         Gdx.input.setInputProcessor(new InputAdapter() {
@@ -92,7 +92,7 @@ public class Level1 extends ScreenAdapter {
             batch.draw(ground, i, 0);
         }
 
-        batch.draw(slingshot, 100, ground.getHeight() - 20, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
+        batch.draw(slingshot, 100, ground.getHeight() - 30, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
         redBird.draw(batch);
         glass1.draw(batch);
         glass2.draw(batch);
