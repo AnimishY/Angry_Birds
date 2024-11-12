@@ -1,133 +1,131 @@
 package com.mygame.angrybirds;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.mygame.angrybirds.Birds.RedB;
+import com.mygame.angrybirds.Pigs.MinionPig;
+import com.mygame.angrybirds.Material.Glass;
 
 public class Level1 extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture background; // Background for the level
-    private Texture ground; // Texture for the ground
-    private Texture slingshot; // Texture for the slingshot
-    private Texture glass; // Texture for the glass object
-    private Texture corporalPig; // Texture for the Corporal Pig
-    private Texture redBird; // Texture for the Red Bird
-    private Stage stage; // Stage for handling UI elements
-    private ImageButton pauseButton; // Button for pausing the game
+    private Texture background, ground, slingshot;
+    private Stage stage;
+    private RedB redBird;
+    private MinionPig minionPig;
+    private Glass glass1, glass2;
+    private boolean isDragging;
+    private Vector2 launchStart, launchEnd, birdStartPosition;
+    private Array<Vector2> trajectoryPoints;
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        background = new Texture(Gdx.files.internal("angrybirds/GameBG.png")); // Load the background image
-        ground = new Texture(Gdx.files.internal("angrybirds/ground.png")); // Load the ground image
-        slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png")); // Load the slingshot image
-        glass = new Texture(Gdx.files.internal("ui/Glass.png")); // Load the glass texture
-        corporalPig = new Texture(Gdx.files.internal("ch/MinionPig.png")); // Load the Corporal Pig texture
-        redBird = new Texture(Gdx.files.internal("ch/Red.png")); // Load the Red Bird texture
+        background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
+        ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
+        slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
-        // Initialize the stage
+        birdStartPosition = new Vector2(120, ground.getHeight() + 20);
+        redBird = new RedB(birdStartPosition.x, birdStartPosition.y);
+        minionPig = new MinionPig(900, ground.getHeight() + 70);
+        glass1 = new Glass(850, ground.getHeight() + 30);
+        glass2 = new Glass(950, ground.getHeight() + 30);
+
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage); // Set input processor to the stage
-
-        // Load pause button texture
-        Texture pauseButtonTexture = new Texture(Gdx.files.internal("ui/Pause.png")); // Ensure you have a pause button texture
-        pauseButton = new ImageButton(new TextureRegionDrawable(pauseButtonTexture));
-
-        // Set button size and position (Top right corner)
-        float buttonWidth = 50;
-        float buttonHeight = 50;
-        pauseButton.setSize(buttonWidth, buttonHeight);
-        pauseButton.setPosition(Gdx.graphics.getWidth() - buttonWidth - 20, Gdx.graphics.getHeight() - buttonHeight - 20); // Position at top right corner
-
-        // Add button to the stage
-        stage.addActor(pauseButton);
-
-        // Add listener for pause button click
-        pauseButton.addListener(event -> {
-            if (event.isHandled()) {
-                System.out.println("Pause clicked!");
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(1)); // Pass current level as 1
-                return true; // Event handled
+        Gdx.input.setInputProcessor(new InputAdapter() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                if (redBird.getBounds().contains(touchPos)) {
+                    isDragging = true;
+                    launchStart = touchPos;
+                    return true;
+                }
+                return false;
             }
-            return false; // Event not handled
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                if (isDragging) {
+                    Vector2 dragPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                    redBird.setPosition(dragPos.x, dragPos.y);
+                    calculateTrajectory(launchStart, dragPos);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                if (isDragging) {
+                    launchEnd = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                    Vector2 launchVelocity = calculateLaunchVelocity(launchStart, launchEnd);
+                    redBird.launch(launchVelocity.x, launchVelocity.y);
+                    isDragging = false;
+                    return true;
+                }
+                return false;
+            }
         });
+
+        trajectoryPoints = new Array<>();
     }
 
     @Override
     public void render(float delta) {
-        Gdx.gl.glClearColor(1, 1, 1, 1); // Clear the screen to white.
+        Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (!isDragging) {
+            redBird.updatePosition(delta);
+        }
 
         batch.begin();
 
-        // Draw the background texture scaled to fit the screen dimensions
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        for (int i = 0; i < Gdx.graphics.getWidth(); i += ground.getWidth()) {
+            batch.draw(ground, i, 0);
+        }
 
-        batch.draw(background, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
+        batch.draw(slingshot, 100, ground.getHeight() - 20, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
+        redBird.draw(batch);
+        glass1.draw(batch);
+        glass2.draw(batch);
+        minionPig.draw(batch);
 
-        // Draw the ground twice, side by side
-        float groundWidth = ground.getWidth();
-        float groundHeight = ground.getHeight();
-
-        batch.draw(ground, 0, 0); // First ground at (0,0)
-        batch.draw(ground, groundWidth, 0); // Second ground adjacent to the first one, starting at the end of the first ground
-
-        // Draw the slingshot above the ground with reduced size
-        float slingshotXPosition = (screenWidth - slingshot.getWidth() / 10) / 7; // Center horizontally
-        float slingshotYPosition = groundHeight - 30; // Position it right above the ground
-
-        // Scale down slingshot size by a factor of 7
-        float slingshotWidth = slingshot.getWidth() / 7;
-        float slingshotHeight = slingshot.getHeight() / 7;
-
-        batch.draw(slingshot, slingshotXPosition, slingshotYPosition, slingshotWidth, slingshotHeight); // Draw scaled slingshot
-
-        // Add Glass texture twice, side by side, resized to 50%
-        float glassWidth = glass.getWidth() * 0.2f; // Decrease size by 50%
-        float glassHeight = glass.getHeight() * 0.2f;
-
-        // Position the glasses towards the right side of the screen
-        float glassXPosition1 = screenWidth - 2 * glassWidth - 50; // 50px padding from the right
-        float glassYPosition = groundHeight - 32; // Place it just above the ground
-
-        // Draw the two glass textures, side by side
-        batch.draw(glass, glassXPosition1, glassYPosition, glassWidth, glassHeight); // First glass
-        batch.draw(glass, glassXPosition1 + glassWidth, glassYPosition, glassWidth, glassHeight); // Second glass
-
-        // Decrease the size of Corporal Pig by 50%
-        float corporalPigWidth = corporalPig.getWidth() * 0.08f;
-        float corporalPigHeight = corporalPig.getHeight() * 0.08f;
-
-        // Position Corporal Pig above the two glasses, at the center of their combined width
-        float corporalPigXPosition = glassXPosition1 + (glassWidth) - 20; // Center on top of the two glasses
-        float corporalPigYPosition = glassYPosition + glassHeight; // Place it above the glasses
-
-        // Draw the Corporal Pig
-        batch.draw(corporalPig, corporalPigXPosition, corporalPigYPosition, corporalPigWidth, corporalPigHeight);
-
-        // Add the Red Bird texture and place it to the left of the slingshot
-        float redBirdWidth = redBird.getWidth() * 0.035f; // Scale down the Red Bird by 15%
-        float redBirdHeight = redBird.getHeight() * 0.035f;
-
-        // Position the Red Bird just to the left of the slingshot
-        float redBirdXPosition = slingshotXPosition - redBirdWidth - 20; // 20px padding from the slingshot
-        float redBirdYPosition = slingshotYPosition; // Align with the slingshot vertically
-
-        // Draw the Red Bird
-        batch.draw(redBird, redBirdXPosition, redBirdYPosition, redBirdWidth, redBirdHeight);
+        if (isDragging) {
+            for (Vector2 point : trajectoryPoints) {
+                batch.draw(redBird.getTexture(), point.x, point.y, 5, 5);
+            }
+        }
 
         batch.end();
-
-        stage.act(delta); // Update the stage
-        stage.draw();     // Draw the stage and its actors (buttons)
+        stage.act(delta);
+        stage.draw();
     }
 
+    private void calculateTrajectory(Vector2 start, Vector2 end) {
+        trajectoryPoints.clear();
+        Vector2 velocity = calculateLaunchVelocity(start, end);
+        float timeStep = 0.1f;
+        for (float t = 0; t < 2; t += timeStep) {
+            float x = start.x + velocity.x * t;
+            float y = start.y + velocity.y * t - 0.5f * 9.8f * t * t;
+            trajectoryPoints.add(new Vector2(x, y));
+        }
+    }
+
+    private Vector2 calculateLaunchVelocity(Vector2 start, Vector2 end) {
+        float power = 5.0f;
+        float dx = start.x - end.x;
+        float dy = start.y - end.y;
+        return new Vector2(dx * power, dy * power);
+    }
 
     @Override
     public void dispose() {
@@ -135,9 +133,10 @@ public class Level1 extends ScreenAdapter {
         background.dispose();
         ground.dispose();
         slingshot.dispose();
-        glass.dispose(); // Dispose of glass texture
-        corporalPig.dispose(); // Dispose of Corporal Pig texture
-        redBird.dispose(); // Dispose of Red Bird texture
-        stage.dispose();     // Dispose of the stage and its resources
+        redBird.dispose();
+        minionPig.dispose();
+        glass1.dispose();
+        glass2.dispose();
+        stage.dispose();
     }
 }
