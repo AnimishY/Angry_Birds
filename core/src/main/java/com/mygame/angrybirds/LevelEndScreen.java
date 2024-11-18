@@ -8,17 +8,21 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 public class LevelEndScreen extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture background; // Background for the level end screen
     private Stage stage; // Stage for handling UI elements
+    private int score; // Variable to hold the score
+    private BitmapFont font; // Bitmap font for displaying text
 
     // Variable to hold the current level
     private int currentLevel;
 
-    public LevelEndScreen(int currentLevel) {
+    public LevelEndScreen(int currentLevel, int score) {
         this.currentLevel = currentLevel; // Set the current level from which this screen is accessed
+        this.score = score;
     }
 
     @Override
@@ -119,6 +123,14 @@ public class LevelEndScreen extends ScreenAdapter {
         float screenHeight = Gdx.graphics.getHeight();
 
         batch.draw(background, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
+
+        // Display the score using a BitmapFont
+        font = new BitmapFont();
+        font.getData().setScale(5); // Increase font size
+        // font color red
+        font.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+        font.draw(batch, "Score: " + score, screenWidth / 2 - 100, screenHeight/2 -100); // Draw the score
 
         batch.end();
 
