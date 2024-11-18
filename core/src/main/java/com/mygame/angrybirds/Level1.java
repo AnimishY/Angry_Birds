@@ -94,8 +94,9 @@ public class Level1 extends ScreenAdapter {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (!isDragging) {
+        if (!isDragging && redBird != null) {
             redBird.updatePosition(delta);
+            checkCollisions();
         }
 
         batch.begin();
@@ -106,10 +107,10 @@ public class Level1 extends ScreenAdapter {
         }
 
         batch.draw(slingshot, 100, ground.getHeight() - 30, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
-        redBird.draw(batch);
-        glass1.draw(batch);
-        glass2.draw(batch);
-        minionPig.draw(batch);
+        if (redBird != null) redBird.draw(batch);
+        if (glass1 != null) glass1.draw(batch);
+        if (glass2 != null) glass2.draw(batch);
+        if (minionPig != null) minionPig.draw(batch);
 
         if (isDragging) {
             for (Vector2 point : trajectoryPoints) {
@@ -157,4 +158,34 @@ public class Level1 extends ScreenAdapter {
         glass2.dispose();
         stage.dispose();
     }
+
+    private void checkCollisions() {
+
+        assert redBird != null;
+        if (redBird.getBounds().overlaps(minionPig.getBounds())) {
+            // Handle collision with pig
+            redBird.dispose();
+            minionPig.dispose();
+            redBird = null;
+            minionPig = null;
+        }
+
+        if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {
+            // Handle collision with glass1
+            redBird.dispose();
+            glass1.dispose();
+            redBird = null;
+            glass1 = null;
+        }
+
+
+        if (redBird != null && redBird.getBounds().overlaps(glass2.getBounds())) {
+            // Handle collision with glass2
+            redBird.dispose();
+            glass2.dispose();
+            redBird = null;
+            glass2 = null;
+        }
+    }
+
 }

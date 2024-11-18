@@ -3,6 +3,7 @@ package com.mygame.angrybirds.Pigs;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
 public class MinionPig {
     private Texture texture;
@@ -38,5 +39,10 @@ public class MinionPig {
 
     public void dispose() {
         texture.dispose();
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, texture.getWidth() * 0.08f, texture.getHeight() * 0.08f);
+
     }
 }
