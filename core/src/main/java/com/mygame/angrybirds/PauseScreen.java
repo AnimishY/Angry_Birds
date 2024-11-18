@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+// import bitmap
+
 
 public class PauseScreen extends ScreenAdapter {
     private SpriteBatch batch;
@@ -15,8 +17,13 @@ public class PauseScreen extends ScreenAdapter {
     private Stage stage; // Stage for handling UI elements
     private int currentLevel; // Variable to hold the current level
 
+    // create a font
+    // create a text for score
+    private int score;
+
     public PauseScreen(int currentLevel) {
         this.currentLevel = currentLevel; // Set the current level from which this screen is accessed
+        this.score = score;
     }
 
     @Override
@@ -96,7 +103,7 @@ public class PauseScreen extends ScreenAdapter {
         levelEndButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Go to Level End clicked!");
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(currentLevel)); // Pass current level to Level End screen
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(currentLevel, 0)); // Pass current level to Level End screen
                 return true;
             }
             return false;

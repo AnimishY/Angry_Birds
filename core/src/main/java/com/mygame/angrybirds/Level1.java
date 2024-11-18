@@ -26,6 +26,10 @@ public class Level1 extends ScreenAdapter {
     private Array<Vector2> trajectoryPoints;
     private InputMultiplexer inputMultiplexer;
 
+    private int PigCount = 1;
+    private int BirdCount = 1;
+    private int Score = 0;
+
     @Override
     public void show() {
         batch = new SpriteBatch();
@@ -168,6 +172,13 @@ public class Level1 extends ScreenAdapter {
             minionPig.dispose();
             redBird = null;
             minionPig = null;
+            PigCount--;
+            Score += 100;
+
+            // If all pigs are destroyed, go to level end screen
+            if (PigCount == 0) {
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
+            }
         }
 
         if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {
@@ -176,6 +187,7 @@ public class Level1 extends ScreenAdapter {
             glass1.dispose();
             redBird = null;
             glass1 = null;
+            Score += 25;
         }
 
 
@@ -185,6 +197,7 @@ public class Level1 extends ScreenAdapter {
             glass2.dispose();
             redBird = null;
             glass2 = null;
+            Score += 25;
         }
     }
 
