@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.mygame.angrybirds.Birds.RedB;
 import com.mygame.angrybirds.Pigs.MinionPig;
@@ -16,12 +18,13 @@ import com.mygame.angrybirds.Material.Glass;
 
 public class Level1 extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture background, ground, slingshot, pauseButton;
+    private Texture background, ground, slingshot;
+    private ImageButton pauseButton;
     private Stage stage;
     private RedB redBird;
     private MinionPig minionPig;
     private Glass glass1, glass2;
-    private boolean isDragging;
+    private boolean isDragging, birdLaunched;
     private Vector2 launchStart, launchEnd, birdStartPosition;
     private Array<Vector2> trajectoryPoints;
     private InputMultiplexer inputMultiplexer;
@@ -36,8 +39,8 @@ public class Level1 extends ScreenAdapter {
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
-        pauseButton = new Texture(Gdx.files.internal("ui/Pause.png"));
 
+        // Initialize bird, pigs, and materials
         birdStartPosition = new Vector2(75, ground.getHeight() + 22);
         redBird = new RedB(birdStartPosition.x, birdStartPosition.y);
         minionPig = new MinionPig(1120, ground.getHeight() - 10);
@@ -45,19 +48,35 @@ public class Level1 extends ScreenAdapter {
         glass2 = new Glass(1150, ground.getHeight() - 30);
 
         stage = new Stage();
-        Gdx.input.setInputProcessor(new InputAdapter() {
+
+        // Set up the pause button
+        Texture pauseButtonTexture = new Texture(Gdx.files.internal("ui/Pause.png"));
+        pauseButton = new ImageButton(new TextureRegionDrawable(pauseButtonTexture));
+
+        float buttonWidth = 50;
+        float buttonHeight = 50;
+
+        pauseButton.setSize(buttonWidth, buttonHeight);
+        pauseButton.setPosition(Gdx.graphics.getWidth() - buttonWidth - 20, Gdx.graphics.getHeight() - buttonHeight - 20);
+
+        stage.addActor(pauseButton);
+
+        pauseButton.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("Pause clicked!");
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(2));
+                return true;
+            }
+            return false;
+        });
+
+        // Custom input processor for bird dragging and launching
+        InputAdapter inputProcessor = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (birdLaunched) return false; // Prevent further interaction if the bird has been launched
+
                 Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
-
-                //Check if the pause button is pressed
-                float newWidth = 100;
-                float newHeight = 100;
-
-                if (touchPos.x >= Gdx.graphics.getWidth() - newWidth - 10 && touchPos.y >= Gdx.graphics.getHeight() - newHeight - 10) {
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(1));
-                    return true;
-                }
 
                 if (redBird.getBounds().contains(touchPos)) {
                     isDragging = true;
@@ -69,28 +88,32 @@ public class Level1 extends ScreenAdapter {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                if (isDragging) {
-                    Vector2 dragPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
-                    redBird.setPosition(dragPos.x, dragPos.y);
-                    calculateTrajectory(launchStart, dragPos);
-                }
+                if (birdLaunched || !isDragging) return false; // Prevent dragging after launch
+
+                Vector2 dragPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                redBird.setPosition(dragPos.x, dragPos.y);
+                calculateTrajectory(launchStart, dragPos);
                 return true;
             }
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                if (isDragging) {
-                    launchEnd = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
-                    Vector2 launchVelocity = calculateLaunchVelocity(launchStart, launchEnd);
-                    redBird.launch(launchVelocity.x, launchVelocity.y);
-                    isDragging = false;
-                    return true;
-                }
-                return false;
-            }
-        });
+                if (birdLaunched || !isDragging) return false; // Prevent launching after the bird is launched
 
-        trajectoryPoints = new Array<Vector2>();
+                launchEnd = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                Vector2 launchVelocity = calculateLaunchVelocity(launchStart, launchEnd);
+                redBird.launch(launchVelocity.x, launchVelocity.y);
+                isDragging = false;
+                birdLaunched = true; // Mark the bird as launched
+                return true;
+            }
+        };
+
+        // Combine input processors
+        inputMultiplexer = new InputMultiplexer(stage, inputProcessor);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
+        trajectoryPoints = new Array<>();
     }
 
     @Override
@@ -122,11 +145,6 @@ public class Level1 extends ScreenAdapter {
             }
         }
 
-        // Draw pause button
-        float newWidth = 100;
-        float newHeight = 100;
-        batch.draw(pauseButton, Gdx.graphics.getWidth() - newWidth - 10, Gdx.graphics.getHeight() - newHeight - 10, newWidth, newHeight);
-
         batch.end();
         stage.act(delta);
         stage.draw();
@@ -150,24 +168,9 @@ public class Level1 extends ScreenAdapter {
         return new Vector2(dx * power, dy * power);
     }
 
-    @Override
-    public void dispose() {
-        batch.dispose();
-        background.dispose();
-        ground.dispose();
-        slingshot.dispose();
-        redBird.dispose();
-        minionPig.dispose();
-        glass1.dispose();
-        glass2.dispose();
-        stage.dispose();
-    }
-
     private void checkCollisions() {
-
         assert redBird != null;
         if (redBird.getBounds().overlaps(minionPig.getBounds())) {
-            // Handle collision with pig
             redBird.dispose();
             minionPig.dispose();
             redBird = null;
@@ -175,14 +178,12 @@ public class Level1 extends ScreenAdapter {
             PigCount--;
             Score += 100;
 
-            // If all pigs are destroyed, go to level end screen
             if (PigCount == 0) {
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
             }
         }
 
         if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {
-            // Handle collision with glass1
             redBird.dispose();
             glass1.dispose();
             redBird = null;
@@ -190,9 +191,7 @@ public class Level1 extends ScreenAdapter {
             Score += 25;
         }
 
-
         if (redBird != null && redBird.getBounds().overlaps(glass2.getBounds())) {
-            // Handle collision with glass2
             redBird.dispose();
             glass2.dispose();
             redBird = null;
@@ -201,4 +200,16 @@ public class Level1 extends ScreenAdapter {
         }
     }
 
+    @Override
+    public void dispose() {
+        batch.dispose();
+        background.dispose();
+        ground.dispose();
+        slingshot.dispose();
+        stage.dispose();
+        if (redBird != null) redBird.dispose();
+        if (minionPig != null) minionPig.dispose();
+        if (glass1 != null) glass1.dispose();
+        if (glass2 != null) glass2.dispose();
+    }
 }
