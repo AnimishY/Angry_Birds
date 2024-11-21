@@ -34,6 +34,7 @@ public class Level1 extends ScreenAdapter {
     private int BirdCount = 1;
     private int Score = 0;
     private float timeElapsed = 0; // Timer for the level end trigger
+    private float pigKillDelay = -1; // Timer for the delay after pig is killed
 
     @Override
     public void show() {
@@ -145,6 +146,15 @@ public class Level1 extends ScreenAdapter {
             }
         }
 
+        // Check if the pig is killed and start the delay for the level end screen
+        if (pigKillDelay >= 0) {
+            pigKillDelay += delta;
+            if (pigKillDelay >= 2) {
+                // 2 seconds after the pig is killed, go to level end screen
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
+            }
+        }
+
         batch.begin();
 
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -197,9 +207,8 @@ public class Level1 extends ScreenAdapter {
             PigCount--;
             Score += 100;
 
-            if (PigCount == 0) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
-            }
+            // Start the 2-second delay before level end screen after the pig is killed
+            pigKillDelay = 0;
         }
 
         if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {

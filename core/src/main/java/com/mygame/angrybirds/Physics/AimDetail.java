@@ -7,7 +7,7 @@ public class AimDetail {
     private boolean launched;
     private float initialX, initialY;  // Store initial position
     private float time;  // Track time since launch
-    private static final float GRAVITY = 19.8f;  // Gravity constant
+    private static final float GRAVITY = 90.8f;  // Gravity constant (adjusted to real-world value)
 
     public AimDetail(float initialVelocityX, float initialVelocityY) {
         this.velocityX = initialVelocityX;
@@ -26,11 +26,12 @@ public class AimDetail {
     }
 
     public float getVelocityX() {
+        // Horizontal velocity remains constant
         return velocityX;
     }
 
     public float getVelocityY() {
-        // Current vertical velocity = initial velocity - gt
+        // Vertical velocity = initial velocity - gravity * time
         return velocityY - (GRAVITY * time);
     }
 
@@ -48,5 +49,37 @@ public class AimDetail {
 
     public Vector2 getVelocity() {
         return new Vector2(velocityX, getVelocityY());
+    }
+
+    /**
+     * Calculates the position of the bird at any given time, based on the time passed and initial velocity.
+     *
+     * @param deltaTime The time step.
+     * @return A Vector2 representing the position.
+     */
+    public Vector2 getPosition(float deltaTime) {
+        if (!launched) return new Vector2(initialX, initialY);
+
+        // Update time
+        update(deltaTime);
+
+        // Horizontal position: initial position + horizontal velocity * time
+        float x = initialX + velocityX * time;
+
+        // Vertical position: initial position + vertical velocity * time - 0.5 * gravity * time^2
+        float y = initialY + velocityY * time + 0.5f * GRAVITY * time * time;
+
+        return new Vector2(x, y);
+    }
+
+    /**
+     * Set the initial position of the bird.
+     *
+     * @param x The initial x-coordinate.
+     * @param y The initial y-coordinate.
+     */
+    public void setInitialPosition(float x, float y) {
+        this.initialX = x;
+        this.initialY = y;
     }
 }
