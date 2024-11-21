@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class Metal extends Material{
     public Metal(float x, float y) {
-        this.texture = new Texture(Gdx.files.internal("ui/Glass.png"));
+        this.texture = new Texture(Gdx.files.internal("ui/Metal.jpg"));
         this.health = 50;
         this.x = x;
         this.y = y;
