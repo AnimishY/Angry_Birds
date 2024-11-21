@@ -41,6 +41,8 @@ public class Level2 extends ScreenAdapter {
     private static final float GROUND_HEIGHT = 100;
     private Glass glass1;
     private Wood wood1;
+    private Wood wood2;
+    private Wood wood3;
 
     // count of pigs and birds
     private int PigCount = 2;
@@ -54,7 +56,9 @@ public class Level2 extends ScreenAdapter {
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
         // Fix: Initialize wood1 and glass1 as class fields
-        wood1 = new Wood(1150, GROUND_HEIGHT);
+        wood1 = new Wood(1180, GROUND_HEIGHT);
+        wood2 = new Wood(1180, GROUND_HEIGHT+20);
+        wood3 = new Wood(1180, GROUND_HEIGHT+40);
         glass1 = new Glass(1050, GROUND_HEIGHT);
 
         birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
@@ -71,7 +75,7 @@ public class Level2 extends ScreenAdapter {
         // Initialize pig list
         pigList = new Array<>();
         pigList.add(new MinionPig(1120, GROUND_HEIGHT + 20));
-        pigList.add(new MinionPig(1150, GROUND_HEIGHT + 60));
+        pigList.add(new MinionPig(1210, GROUND_HEIGHT + 60));
 
         stage = new Stage();
         Texture pauseButtonTexture = new Texture(Gdx.files.internal("ui/Pause.png"));
@@ -82,6 +86,7 @@ public class Level2 extends ScreenAdapter {
 
         pauseButton.addListener(event -> {
             if (event.isHandled()) {
+                System.out.println("Pause clicked!");
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(2));
                 return true;
             }
@@ -163,43 +168,48 @@ public class Level2 extends ScreenAdapter {
         if (birdLaunched) {
             timeElapsed += delta;
             if (timeElapsed >= 10 || (currentBird != null && currentBird.getPosition().y <= GROUND_HEIGHT)) {
-                if (birdIterator.hasNext() && BirdCount > 0) {
+                if (birdIterator.hasNext()) {
                     currentBird = birdIterator.next();
                     currentBird.setPosition(birdStartPosition.x, birdStartPosition.y);
                     birdLaunched = false;
                     timeElapsed = 0;
-                } else if (PigCount > 0) {
-                    // No more birds and pigs still exist
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                } else {
+                    currentBird = null; // No more birds
+                    if (PigCount > 0) {
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                    }
                 }
             }
         }
 
+
         batch.begin();
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw ground
+// Draw ground
         for (int i = 0; i < Gdx.graphics.getWidth(); i += ground.getWidth()) {
             batch.draw(ground, i, GROUND_HEIGHT - 100, ground.getWidth(), ground.getHeight());
         }
 
         batch.draw(slingshot, 100, GROUND_HEIGHT, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
 
-        // Draw wood and glass (now will be visible since they're properly initialized)
-        wood1.draw(batch);
-        glass1.draw(batch);
+// Draw wood and glass (check for null before drawing)
+        if (wood1 != null) wood1.draw(batch);
+        if (wood2 != null) wood2.draw(batch);
+        if (wood3 != null) wood3.draw(batch);
+        if (glass1 != null) glass1.draw(batch);
 
-        // Draw current bird
+// Draw current bird
         if (currentBird != null) {
             currentBird.draw(batch);
         }
 
-        // Draw pigs
+// Draw pigs
         for (MinionPig pig : pigList) {
             pig.draw(batch);
         }
 
-        // Draw trajectory
+// Draw trajectory
         if (isDragging) {
             for (Vector2 point : trajectoryPoints) {
                 batch.draw(currentBird.getTexture(), point.x, point.y, 5, 5);
@@ -207,6 +217,7 @@ public class Level2 extends ScreenAdapter {
         }
 
         batch.end();
+
         stage.act(delta);
         stage.draw();
     }
@@ -215,21 +226,30 @@ public class Level2 extends ScreenAdapter {
         if (currentBird == null) return;
 
         // Check collisions with obstacles
-        if (wood1 != null && currentBird.getBounds().overlaps(wood1.getBounds())) {
-            wood1.takeDamage(currentBird.getDamage());
-            if (wood1.isDestroyed()) {
-                wood1 = null;
-                Score += 50;
-            }
+        if (glass1 != null && currentBird.getBounds().overlaps(glass1.getBounds())) {
+            glass1.dispose();
+            glass1 = null;
+            Score += 25;
         }
 
-        if (glass1 != null && currentBird.getBounds().overlaps(glass1.getBounds())) {
-            glass1.takeDamage(currentBird.getDamage());
-            if (glass1.isDestroyed()) {
-                glass1 = null;
-                Score += 50;
-            }
+        if (wood1 != null && currentBird.getBounds().overlaps(wood1.getBounds())) {
+            wood1.dispose();
+            wood1 = null;
+            Score += 50;
         }
+
+        if (wood2 != null && currentBird.getBounds().overlaps(wood2.getBounds())) {
+            wood2.dispose();
+            wood2 = null;
+            Score += 50;
+        }
+
+        if (wood3 != null && currentBird.getBounds().overlaps(wood3.getBounds())) {
+            wood3.dispose();
+            wood3 = null;
+            Score += 50;
+        }
+
 
         // Check collisions with pigs
         Iterator<MinionPig> pigIterator = pigList.iterator();
@@ -268,6 +288,8 @@ public class Level2 extends ScreenAdapter {
             pig.dispose();
         }
 
+        if (wood2 != null) wood1.dispose();
+        if (wood3 != null) wood1.dispose();
         if (wood1 != null) wood1.dispose();
         if (glass1 != null) glass1.dispose();
     }
