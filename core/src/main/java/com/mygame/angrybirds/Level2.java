@@ -1,25 +1,50 @@
 package com.mygame.angrybirds;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Array;
+import com.mygame.angrybirds.Birds.Bird;
+import com.mygame.angrybirds.Birds.RedB;
+import com.mygame.angrybirds.Birds.ChuckB;
+import com.mygame.angrybirds.Birds.TerrenceB;
+import com.mygame.angrybirds.Material.Glass;
+import com.mygame.angrybirds.Material.Wood;
+import com.mygame.angrybirds.Pigs.MinionPig;
+
+import java.util.Iterator;
 
 public class Level2 extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture background;
-    private Texture ground;
-    private Texture slingshot;
-    private Texture wood;
-    private Texture pig;
-    private Texture redBird;  // Red bird texture
-    private Texture chuckBird;  // Chuck bird texture
+    private Texture background, ground, slingshot;
     private Stage stage;
     private ImageButton pauseButton;
+    private Array<Bird> birdList;
+    private Iterator<Bird> birdIterator;
+    private Bird currentBird;
+    private Array<MinionPig> pigList;
+    private boolean isDragging, birdLaunched;
+    private Vector2 launchStart, launchEnd, birdStartPosition;
+    private Array<Vector2> trajectoryPoints;
+    private InputMultiplexer inputMultiplexer;
+    private int Score = 0;
+    private float timeElapsed = 0;
+    private float levelEndDelay = -1;
+    private static final float GROUND_HEIGHT = 100;
+    private Glass glass1;
+    private Wood wood1;
+
+    // count of pigs and birds
+    private int PigCount = 2;
+    private int BirdCount = 2;
 
     @Override
     public void show() {
@@ -27,33 +52,81 @@ public class Level2 extends ScreenAdapter {
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
-        wood = new Texture(Gdx.files.internal("ui/Wood.png"));
-        pig = new Texture(Gdx.files.internal("ch/CorporalPig.png"));
-        redBird = new Texture(Gdx.files.internal("ch/Red.png")); // Load Red bird
-        chuckBird = new Texture(Gdx.files.internal("ch/Chuck.png")); // Load Chuck bird
+
+        // Fix: Initialize wood1 and glass1 as class fields
+        wood1 = new Wood(1150, GROUND_HEIGHT);
+        glass1 = new Glass(1050, GROUND_HEIGHT);
+
+        birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
+
+        // Initialize bird list with multiple birds
+        birdList = new Array<>();
+        birdList.add(new RedB(birdStartPosition.x, birdStartPosition.y));
+        birdList.add(new ChuckB(birdStartPosition.x, birdStartPosition.y));
+
+        // Create bird iterator
+        birdIterator = birdList.iterator();
+        currentBird = birdIterator.hasNext() ? birdIterator.next() : null;
+
+        // Initialize pig list
+        pigList = new Array<>();
+        pigList.add(new MinionPig(1120, GROUND_HEIGHT + 20));
+        pigList.add(new MinionPig(1150, GROUND_HEIGHT + 60));
 
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage);
-
         Texture pauseButtonTexture = new Texture(Gdx.files.internal("ui/Pause.png"));
         pauseButton = new ImageButton(new TextureRegionDrawable(pauseButtonTexture));
-
-        float buttonWidth = 50;
-        float buttonHeight = 50;
-
-        pauseButton.setSize(buttonWidth, buttonHeight);
-        pauseButton.setPosition(Gdx.graphics.getWidth() - buttonWidth - 20, Gdx.graphics.getHeight() - buttonHeight - 20);
-
+        pauseButton.setSize(50, 50);
+        pauseButton.setPosition(Gdx.graphics.getWidth() - 70, Gdx.graphics.getHeight() - 70);
         stage.addActor(pauseButton);
 
         pauseButton.addListener(event -> {
             if (event.isHandled()) {
-                System.out.println("Pause clicked!");
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(2));
                 return true;
             }
             return false;
         });
+
+        InputAdapter inputProcessor = new InputAdapter() {
+            @Override
+            public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+                if (birdLaunched) return false;
+                Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                if (currentBird.getBounds().contains(touchPos)) {
+                    isDragging = true;
+                    launchStart = touchPos;
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public boolean touchDragged(int screenX, int screenY, int pointer) {
+                if (birdLaunched || !isDragging) return false;
+                Vector2 dragPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                currentBird.setPosition(dragPos.x, dragPos.y);
+                calculateTrajectory(launchStart, dragPos);
+                return true;
+            }
+
+            @Override
+            public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+                if (birdLaunched || !isDragging) return false;
+                launchEnd = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
+                Vector2 launchVelocity = calculateLaunchVelocity(launchStart, launchEnd);
+                currentBird.launch(launchVelocity.x, launchVelocity.y);
+                isDragging = false;
+                birdLaunched = true;
+                timeElapsed = 0;
+                return true;
+            }
+        };
+
+        inputMultiplexer = new InputMultiplexer(stage, inputProcessor);
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
+        trajectoryPoints = new Array<>();
     }
 
     @Override
@@ -61,80 +134,122 @@ public class Level2 extends ScreenAdapter {
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        if (!isDragging && currentBird != null) {
+            currentBird.updatePosition(delta);
+
+            // Stop bird at ground level
+            if (currentBird.getPosition().y <= GROUND_HEIGHT) {
+                currentBird.setPosition(currentBird.getPosition().x, GROUND_HEIGHT);
+                currentBird.launch(0, 0);
+                BirdCount--; // Decrease bird count when bird hits ground
+                if (BirdCount <= 0 && !pigList.isEmpty()) {
+                    // No more birds and pigs still exist - game over
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                }
+            }
+
+            checkCollisions();
+        }
+
+        // Manage bird progression and level end conditions
+        if (pigList.isEmpty()) {
+            levelEndDelay += delta;
+            if (levelEndDelay >= 2) {
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+            }
+        }
+
+        // Move to next bird if current bird is done
+        if (birdLaunched) {
+            timeElapsed += delta;
+            if (timeElapsed >= 10 || (currentBird != null && currentBird.getPosition().y <= GROUND_HEIGHT)) {
+                if (birdIterator.hasNext() && BirdCount > 0) {
+                    currentBird = birdIterator.next();
+                    currentBird.setPosition(birdStartPosition.x, birdStartPosition.y);
+                    birdLaunched = false;
+                    timeElapsed = 0;
+                } else if (PigCount > 0) {
+                    // No more birds and pigs still exist
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                }
+            }
+        }
+
         batch.begin();
+        batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        float screenWidth = Gdx.graphics.getWidth();
-        float screenHeight = Gdx.graphics.getHeight();
+        // Draw ground
+        for (int i = 0; i < Gdx.graphics.getWidth(); i += ground.getWidth()) {
+            batch.draw(ground, i, GROUND_HEIGHT - 100, ground.getWidth(), ground.getHeight());
+        }
 
-        // Draw background and ground
-        batch.draw(background, 0, 0, screenWidth, screenHeight);
-        batch.draw(ground, 0, 0, screenWidth, ground.getHeight());
+        batch.draw(slingshot, 100, GROUND_HEIGHT, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
 
-        // Draw slingshot
-        float slingshotXPosition = (screenWidth - slingshot.getWidth() / 10) / 5;
-        float slingshotYPosition = ground.getHeight() - 30;
+        // Draw wood and glass (now will be visible since they're properly initialized)
+        wood1.draw(batch);
+        glass1.draw(batch);
 
-        float slingshotWidth = slingshot.getWidth() / 7;
-        float slingshotHeight = slingshot.getHeight() / 7;
+        // Draw current bird
+        if (currentBird != null) {
+            currentBird.draw(batch);
+        }
 
-        batch.draw(slingshot, slingshotXPosition, slingshotYPosition, slingshotWidth, slingshotHeight);
+        // Draw pigs
+        for (MinionPig pig : pigList) {
+            pig.draw(batch);
+        }
 
-        // Draw Red Bird (scaled down)
-        float redBirdWidth = redBird.getWidth() * 0.035f; // Scale down the Red Bird by 15%
-        float redBirdHeight = redBird.getHeight() * 0.035f;
-        float redBirdX = slingshotXPosition - redBirdWidth - 10; // Position Red Bird to the left of slingshot
-        float redBirdY = slingshotYPosition ;
-
-        batch.draw(redBird, redBirdX, redBirdY, redBirdWidth, redBirdHeight);
-
-        // Draw Chuck Bird (scaled down)
-        float chuckBirdWidth = chuckBird.getWidth() * 0.085f; // Scale down Chuck Bird
-        float chuckBirdHeight = chuckBird.getHeight() * 0.085f;
-        float chuckBirdX = redBirdX - chuckBirdWidth + 10; // Position Chuck to the left of Red Bird
-        float chuckBirdY = redBirdY;
-
-        batch.draw(chuckBird, chuckBirdX, chuckBirdY, chuckBirdWidth, chuckBirdHeight);
-
-        // Wood dimensions
-        float woodWidth = wood.getWidth() / 16.5f;
-        float woodHeight = wood.getHeight() / 16.5f;
-
-        // Adjust the wood position to be lower than the pigs
-        float wood1X = screenWidth - woodWidth * 2 - 20;
-        float wood1Y = ground.getHeight() - 30;
-
-        float wood2X = wood1X + woodWidth;
-        float wood2Y = wood1Y;
-
-        float wood3X = wood2X;
-        float wood3Y = wood2Y + woodHeight;
-
-        // Place the pigs on the wood
-        float pigWidth = pig.getWidth() / 12.0f;
-        float pigHeight = pig.getHeight() / 12.0f;
-
-        // Adjust wood position below the first pig
-        float pig1X = wood1X + (woodWidth - pigWidth) / 2;
-        float pig1Y = wood1Y + woodHeight;
-
-        batch.draw(wood, wood1X, wood1Y, woodWidth, woodHeight); // Below pig 1
-        batch.draw(wood, wood2X, wood2Y, woodWidth, woodHeight); // Horizontal wood 2
-        batch.draw(wood, wood3X, wood3Y, woodWidth, woodHeight); // Vertical wood
-
-        // Draw first pig
-        batch.draw(pig, pig1X, pig1Y, pigWidth, pigHeight);
-
-        // Adjust wood position below the second pig
-        float pig2X = wood3X + (woodWidth - pigWidth) / 2;
-        float pig2Y = wood3Y + woodHeight;
-
-        // Draw second pig on top wood
-        batch.draw(pig, pig2X, pig2Y, pigWidth, pigHeight);
+        // Draw trajectory
+        if (isDragging) {
+            for (Vector2 point : trajectoryPoints) {
+                batch.draw(currentBird.getTexture(), point.x, point.y, 5, 5);
+            }
+        }
 
         batch.end();
-
         stage.act(delta);
         stage.draw();
+    }
+
+    private void checkCollisions() {
+        if (currentBird == null) return;
+
+        // Check collisions with obstacles
+        if (wood1 != null && currentBird.getBounds().overlaps(wood1.getBounds())) {
+            wood1.takeDamage(currentBird.getDamage());
+            if (wood1.isDestroyed()) {
+                wood1 = null;
+                Score += 50;
+            }
+        }
+
+        if (glass1 != null && currentBird.getBounds().overlaps(glass1.getBounds())) {
+            glass1.takeDamage(currentBird.getDamage());
+            if (glass1.isDestroyed()) {
+                glass1 = null;
+                Score += 50;
+            }
+        }
+
+        // Check collisions with pigs
+        Iterator<MinionPig> pigIterator = pigList.iterator();
+        while (pigIterator.hasNext()) {
+            MinionPig pig = pigIterator.next();
+
+            if (currentBird.getBounds().overlaps(pig.getBounds())) {
+                pig.takeDamage(currentBird.getDamage());
+
+                if (pig.isDestroyed()) {
+                    pigIterator.remove();
+                    PigCount--; // Decrease pig count when pig is destroyed
+                    Score += 100;
+                }
+
+                currentBird.dispose();
+                currentBird = null;
+                break;
+            }
+        }
     }
 
     @Override
@@ -143,10 +258,35 @@ public class Level2 extends ScreenAdapter {
         background.dispose();
         ground.dispose();
         slingshot.dispose();
-        wood.dispose();
-        pig.dispose();
-        redBird.dispose();  // Dispose Red bird texture
-        chuckBird.dispose();  // Dispose Chuck bird texture
         stage.dispose();
+
+        for (Bird bird : birdList) {
+            bird.dispose();
+        }
+
+        for (MinionPig pig : pigList) {
+            pig.dispose();
+        }
+
+        if (wood1 != null) wood1.dispose();
+        if (glass1 != null) glass1.dispose();
+    }
+
+    private void calculateTrajectory(Vector2 start, Vector2 end) {
+        trajectoryPoints.clear();
+        Vector2 velocity = calculateLaunchVelocity(start, end);
+        float timeStep = 0.1f;
+        for (float t = 0; t < 2; t += timeStep) {
+            float x = start.x + velocity.x * t;
+            float y = start.y + velocity.y * t - 0.5f * 9.8f * t * t;
+            trajectoryPoints.add(new Vector2(x, y));
+        }
+    }
+
+    private Vector2 calculateLaunchVelocity(Vector2 start, Vector2 end) {
+        float power = 5.0f;
+        float dx = start.x - end.x;
+        float dy = start.y - end.y;
+        return new Vector2(dx * power, dy * power);
     }
 }

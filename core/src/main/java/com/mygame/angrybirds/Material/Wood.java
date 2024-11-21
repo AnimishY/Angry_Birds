@@ -1,18 +1,15 @@
 package com.mygame.angrybirds.Material;
 
-public class Wood {
-    private int health;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
-    public Wood() {
-        this.health = 75;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void takeDamage(int damage) {
-        health -= damage;
-        if (health < 0) health = 0;
+public class Wood extends Material{
+    public Wood(float x, float y) {
+        this.texture = new Texture(Gdx.files.internal("ui/Glass.png"));
+        this.health = 50;
+        this.x = x;
+        this.y = y;
     }
 }

@@ -1,19 +1,15 @@
 package com.mygame.angrybirds.Material;
 
-public class Metal {
-    private int health;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 
-    public Metal() {
-        this.health = 100;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void takeDamage(int damage) {
-        health -= damage;
-        if (health < 0) health = 0;
+public class Metal extends Material{
+    public Metal(float x, float y) {
+        this.texture = new Texture(Gdx.files.internal("ui/Glass.png"));
+        this.health = 50;
+        this.x = x;
+        this.y = y;
     }
 }
-
