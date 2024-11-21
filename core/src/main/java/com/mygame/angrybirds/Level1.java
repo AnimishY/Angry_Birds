@@ -117,7 +117,7 @@ public class Level1 extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer(stage, inputProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        trajectoryPoints = new Array<>();
+        trajectoryPoints = new Array<Vector2>();
     }
 
     @Override
@@ -126,7 +126,11 @@ public class Level1 extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (!isDragging && redBird != null) {
+
+            // render the bird
+
             redBird.updatePosition(delta);
+            // print delta time
 
             // Stop the bird if it touches the ground
             if (redBird.getPosition().y <= GROUND_HEIGHT) {
@@ -137,12 +141,13 @@ public class Level1 extends ScreenAdapter {
             checkCollisions();
         }
 
+
         // Update the timer after bird is launched
         if (birdLaunched) {
             timeElapsed += delta;
             if (timeElapsed >= 10) {
                 // After 10 seconds, go to level end screen regardless of pig status
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, 0));
             }
         }
 
@@ -170,8 +175,12 @@ public class Level1 extends ScreenAdapter {
 
         if (isDragging) {
             for (Vector2 point : trajectoryPoints) {
+                assert redBird != null;
                 batch.draw(redBird.getTexture(), point.x, point.y, 5, 5);
             }
+
+            // render the trajectory points when the bird is launched
+            renderTrajectory();
         }
 
         batch.end();
@@ -190,6 +199,18 @@ public class Level1 extends ScreenAdapter {
         }
     }
 
+    // render the trajectory points when the bird is launched
+    private void renderTrajectory() {
+        if (isDragging) {
+            for (Vector2 point : trajectoryPoints) {
+                assert redBird != null;
+                batch.draw(redBird.getTexture(), point.x, point.y, 5, 5);
+            }
+        }
+    }
+
+
+
     private Vector2 calculateLaunchVelocity(Vector2 start, Vector2 end) {
         float power = 5.0f;
         float dx = start.x - end.x;
@@ -201,14 +222,17 @@ public class Level1 extends ScreenAdapter {
         assert redBird != null;
         if (redBird.getBounds().overlaps(minionPig.getBounds())) {
             redBird.dispose();
-            minionPig.dispose();
-            redBird = null;
-            minionPig = null;
-            PigCount--;
-            Score += 100;
 
-            // Start the 2-second delay before level end screen after the pig is killed
-            pigKillDelay = 0;
+            minionPig.takeDamage(redBird.getDamage());
+            if (minionPig.isDestroyed()) {
+                minionPig.dispose();
+                PigCount--;
+                Score += 100;
+                redBird = null;
+                minionPig = null;
+                // Start the 2-second delay before level end screen after the pig is killed
+                pigKillDelay = 0;
+            }
         }
 
         if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {
