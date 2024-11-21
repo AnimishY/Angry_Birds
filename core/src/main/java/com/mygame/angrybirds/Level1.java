@@ -29,9 +29,11 @@ public class Level1 extends ScreenAdapter {
     private Array<Vector2> trajectoryPoints;
     private InputMultiplexer inputMultiplexer;
 
+    private static final float GROUND_HEIGHT = 100; // New ground height constant
     private int PigCount = 1;
     private int BirdCount = 1;
     private int Score = 0;
+    private float timeElapsed = 0; // Timer for the level end trigger
 
     @Override
     public void show() {
@@ -41,11 +43,11 @@ public class Level1 extends ScreenAdapter {
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
         // Initialize bird, pigs, and materials
-        birdStartPosition = new Vector2(75, ground.getHeight() + 22);
+        birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
         redBird = new RedB(birdStartPosition.x, birdStartPosition.y);
-        minionPig = new MinionPig(1120, ground.getHeight() - 10);
-        glass1 = new Glass(1050, ground.getHeight() - 30);
-        glass2 = new Glass(1150, ground.getHeight() - 30);
+        minionPig = new MinionPig(1120, GROUND_HEIGHT + 20 );
+        glass1 = new Glass(1050, GROUND_HEIGHT );
+        glass2 = new Glass(1150, GROUND_HEIGHT );
 
         stage = new Stage();
 
@@ -74,7 +76,7 @@ public class Level1 extends ScreenAdapter {
         InputAdapter inputProcessor = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (birdLaunched) return false; // Prevent further interaction if the bird has been launched
+                if (birdLaunched) return false;
 
                 Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
 
@@ -88,7 +90,7 @@ public class Level1 extends ScreenAdapter {
 
             @Override
             public boolean touchDragged(int screenX, int screenY, int pointer) {
-                if (birdLaunched || !isDragging) return false; // Prevent dragging after launch
+                if (birdLaunched || !isDragging) return false;
 
                 Vector2 dragPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
                 redBird.setPosition(dragPos.x, dragPos.y);
@@ -98,13 +100,14 @@ public class Level1 extends ScreenAdapter {
 
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-                if (birdLaunched || !isDragging) return false; // Prevent launching after the bird is launched
+                if (birdLaunched || !isDragging) return false;
 
                 launchEnd = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
                 Vector2 launchVelocity = calculateLaunchVelocity(launchStart, launchEnd);
                 redBird.launch(launchVelocity.x, launchVelocity.y);
                 isDragging = false;
-                birdLaunched = true; // Mark the bird as launched
+                birdLaunched = true;
+                timeElapsed = 0; // Reset the timer when bird is launched
                 return true;
             }
         };
@@ -123,17 +126,33 @@ public class Level1 extends ScreenAdapter {
 
         if (!isDragging && redBird != null) {
             redBird.updatePosition(delta);
+
+            // Stop the bird if it touches the ground
+            if (redBird.getPosition().y <= GROUND_HEIGHT) {
+                redBird.setPosition(redBird.getPosition().x, GROUND_HEIGHT);
+                redBird.launch(0, 0); // Stop further motion
+            }
+
             checkCollisions();
+        }
+
+        // Update the timer after bird is launched
+        if (birdLaunched) {
+            timeElapsed += delta;
+            if (timeElapsed >= 10) {
+                // After 10 seconds, go to level end screen regardless of pig status
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
+            }
         }
 
         batch.begin();
 
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         for (int i = 0; i < Gdx.graphics.getWidth(); i += ground.getWidth()) {
-            batch.draw(ground, i, 0);
+            batch.draw(ground, i, GROUND_HEIGHT - 100, ground.getWidth(), ground.getHeight());
         }
 
-        batch.draw(slingshot, 100, ground.getHeight() - 30, slingshot.getWidth() / 7, slingshot.getHeight() / 7);
+        batch.draw(slingshot, 100, GROUND_HEIGHT , slingshot.getWidth() / 7, slingshot.getHeight() / 7);
         if (redBird != null) redBird.draw(batch);
         if (glass1 != null) glass1.draw(batch);
         if (glass2 != null) glass2.draw(batch);
