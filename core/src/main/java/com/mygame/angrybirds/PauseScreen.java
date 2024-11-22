@@ -112,7 +112,7 @@ public class PauseScreen extends ScreenAdapter {
         levelEndButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Go to Level End clicked!");
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(currentLevel, 0)); // Pass current level to Level End screen
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(currentLevel, 0, false)); // Pass current level to Level End screen
                 return true;
             }
             return false;

@@ -19,10 +19,17 @@ public class LevelEndScreen extends ScreenAdapter {
 
     // Variable to hold the current level
     private int currentLevel;
+    private boolean allPigsKilled;
 
-    public LevelEndScreen(int currentLevel, int score) {
+    public LevelEndScreen(int currentLevel, int score, boolean allPigsKilled) {
         this.currentLevel = currentLevel; // Set the current level from which this screen is accessed
         this.score = score;
+
+        if (allPigsKilled) {
+            Level level = new Level(currentLevel, true); // true if level completed
+            level.writeLevelData(currentLevel, true);
+
+        }
     }
 
     @Override

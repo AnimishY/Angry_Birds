@@ -110,6 +110,7 @@ public class Settings extends ScreenAdapter {
         System.out.println("Game progress reset.");
         ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new SplashScreen()); // Navigate to splash screen before going to home screen or level select.
         // Implement actual reset logic here (e.g., clearing saved data)
+        Level.resetLevelData(); // Reset level data
     }
 
     @Override

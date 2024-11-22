@@ -16,8 +16,4 @@ public class Metal extends Material{
     public void draw(SpriteBatch batch) {
         batch.draw(texture, x, y, texture.getWidth() * 0.25f, texture.getHeight() * 0.25f);
     }
-
-    public void dispose() {
-        texture.dispose();
-    }
 }

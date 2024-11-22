@@ -147,7 +147,7 @@ public class Level1 extends ScreenAdapter {
             timeElapsed += delta;
             if (timeElapsed >= 10) {
                 // After 10 seconds, go to level end screen regardless of pig status
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, 0));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, 0, false));
             }
         }
 
@@ -156,7 +156,7 @@ public class Level1 extends ScreenAdapter {
             pigKillDelay += delta;
             if (pigKillDelay >= 2) {
                 // 2 seconds after the pig is killed, go to level end screen
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(1, Score, true));
             }
         }
 

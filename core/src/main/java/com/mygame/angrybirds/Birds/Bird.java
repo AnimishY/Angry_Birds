@@ -75,4 +75,12 @@ public class Bird {
     public int getDamage() {
         return damage;
     }
+
+    public void takeDamage(int i) {
+        health -= i;
+    }
+
+    public boolean isDestroyed() {
+        return health <= 0;
+    }
 }

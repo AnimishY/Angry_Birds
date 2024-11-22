@@ -8,6 +8,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygame.angrybirds.Level;
+
+
+// library for csv
+import java.io.FileWriter;
+import java.io.IOException;
+
 
 public class LevelSelectScreen extends ScreenAdapter {
     private SpriteBatch batch;
@@ -25,6 +32,7 @@ public class LevelSelectScreen extends ScreenAdapter {
     private ImageButton level3Button;
     private ImageButton level4Button;
     private ImageButton level5Button;
+
 
     @Override
     public void show() {
@@ -69,8 +77,23 @@ public class LevelSelectScreen extends ScreenAdapter {
         float startX = (Gdx.graphics.getWidth() - (5 * buttonWidth + 4 * gap)) / 2; // Centering horizontally
         float startY = Gdx.graphics.getHeight() / 2; // Start Y position
 
+        // check if the csv file exists
+        // if not, create the file and write the header row as level, completed status
+        // if the file exists, read the file and check the completed status of each level
+        // if the level is completed, change the button texture to greentick version
+        // if the level is not completed, keep the button texture as it is
+
+
+
         // Level 1 Button
-        level1Texture = new Texture(Gdx.files.internal("ui/L1.png"));
+        // check if the level is completed
+        // if completed, use the greentick version of the button
+        // if not completed, use the normal version of the button
+        if (Level.readLevelData(1)) {
+            level1Texture = new Texture(Gdx.files.internal("ui/L1C.png"));
+        } else {
+            level1Texture = new Texture(Gdx.files.internal("ui/L1.png"));
+        }
         level1Button = new ImageButton(new TextureRegionDrawable(level1Texture));
         level1Button.setSize(buttonWidth, buttonHeight);
         level1Button.setPosition(startX, startY);
@@ -87,7 +110,11 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(level1Button);
 
         // Level 2 Button
-        level2Texture = new Texture(Gdx.files.internal("ui/L2.png"));
+        if (Level.readLevelData(2)) {
+            level2Texture = new Texture(Gdx.files.internal("ui/L2C.png"));
+        } else {
+            level2Texture = new Texture(Gdx.files.internal("ui/L2.png"));
+        }
         level2Button = new ImageButton(new TextureRegionDrawable(level2Texture));
         level2Button.setSize(buttonWidth, buttonHeight);
         level2Button.setPosition(startX + (buttonWidth + gap), startY);
@@ -104,7 +131,11 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(level2Button);
 
         // Level 3 Button
-        level3Texture = new Texture(Gdx.files.internal("ui/L3.png"));
+        if (Level.readLevelData(3)) {
+            level3Texture = new Texture(Gdx.files.internal("ui/L3C.png"));
+        } else {
+            level3Texture = new Texture(Gdx.files.internal("ui/L3.png"));
+        }
         level3Button = new ImageButton(new TextureRegionDrawable(level3Texture));
         level3Button.setSize(buttonWidth, buttonHeight);
         level3Button.setPosition(startX + 2 * (buttonWidth + gap), startY);
@@ -121,7 +152,11 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(level3Button);
 
         // Level 4 Button (Locked)
-        level4Texture = new Texture(Gdx.files.internal("ui/L4L.png"));
+        if (Level.readLevelData(4)) {
+            level4Texture = new Texture(Gdx.files.internal("ui/L4C.png"));
+        } else {
+            level4Texture = new Texture(Gdx.files.internal("ui/L4L.png"));
+        }
         level4Button = new ImageButton(new TextureRegionDrawable(level4Texture));
         level4Button.setSize(buttonWidth, buttonHeight);
         level4Button.setPosition(startX + 3 * (buttonWidth + gap), startY);
@@ -137,7 +172,11 @@ public class LevelSelectScreen extends ScreenAdapter {
         stage.addActor(level4Button);
 
         // Level 5 Button (Locked)
-        level5Texture = new Texture(Gdx.files.internal("ui/L5L.png"));
+        if (Level.readLevelData(5)) {
+            level5Texture = new Texture(Gdx.files.internal("ui/L5C.png"));
+        } else {
+            level5Texture = new Texture(Gdx.files.internal("ui/L5L.png"));
+        }
         level5Button = new ImageButton(new TextureRegionDrawable(level5Texture));
         level5Button.setSize(buttonWidth, buttonHeight);
         level5Button.setPosition(startX + 4 * (buttonWidth + gap), startY);

@@ -64,7 +64,7 @@ public class Level3 extends ScreenAdapter {
         birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
 
         // Initialize birds
-        birdList = new Array<>();
+        birdList = new Array<Bird>();
         birdList.add(new RedB(birdStartPosition.x, birdStartPosition.y));
         birdList.add(new ChuckB(birdStartPosition.x, birdStartPosition.y));
         birdList.add(new TerrenceB(birdStartPosition.x, birdStartPosition.y));
@@ -73,8 +73,8 @@ public class Level3 extends ScreenAdapter {
         currentBird = birdIterator.hasNext() ? birdIterator.next() : null;
 
         // Initialize pigs
-        kingPigList = new Array<>();
-        corporalPigList = new Array<>();
+        kingPigList = new Array<KingPig>();
+        corporalPigList = new Array<CorporalPig>();
         kingPigList.add(new KingPig(1180, GROUND_HEIGHT + 102));
         corporalPigList.add(new CorporalPig(1090, GROUND_HEIGHT + 60));
 
@@ -99,7 +99,7 @@ public class Level3 extends ScreenAdapter {
         InputAdapter inputProcessor = new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                if (birdLaunched) return false;
+                if (birdLaunched || currentBird == null) return false;
                 Vector2 touchPos = new Vector2(screenX, Gdx.graphics.getHeight() - screenY);
                 if (currentBird.getBounds().contains(touchPos)) {
                     isDragging = true;
@@ -134,7 +134,7 @@ public class Level3 extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer(stage, inputProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        trajectoryPoints = new Array<>();
+        trajectoryPoints = new Array<Vector2>();
     }
 
     @Override
@@ -150,7 +150,7 @@ public class Level3 extends ScreenAdapter {
                 currentBird.launch(0, 0);
                 BirdCount--;
                 if (BirdCount <= 0 && (!kingPigList.isEmpty() || !corporalPigList.isEmpty())) {
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score));
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
                 }
             }
 
@@ -160,7 +160,25 @@ public class Level3 extends ScreenAdapter {
         if (kingPigList.isEmpty() && corporalPigList.isEmpty()) {
             levelEndDelay += delta;
             if (levelEndDelay >= 2) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, true));
+            }
+        }
+
+        // Move to next bird if current bird is done
+        if (birdLaunched) {
+            timeElapsed += delta;
+            if (timeElapsed >= 10 || (currentBird != null && currentBird.getPosition().y <= GROUND_HEIGHT)) {
+                if (birdIterator.hasNext()) {
+                    currentBird = birdIterator.next();
+                    currentBird.setPosition(birdStartPosition.x, birdStartPosition.y);
+                    birdLaunched = false;
+                    timeElapsed = 0;
+                } else {
+                    currentBird = null;
+                    if (PigCount > 0) {
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
+                    }
+                }
             }
         }
 
@@ -192,6 +210,14 @@ public class Level3 extends ScreenAdapter {
             corporalPig.draw(batch);
         }
 
+        // Draw trajectory
+        if (isDragging) {
+            for (Vector2 point : trajectoryPoints) {
+                batch.draw(currentBird.getTexture(), point.x, point.y, 5, 5);
+            }
+        }
+
+
         batch.end();
         stage.act(delta);
         stage.draw();
@@ -208,7 +234,7 @@ public class Level3 extends ScreenAdapter {
             }
         }
 
-        // Check collisions with pigs
+        // Check collisions with King Pigs
         Iterator<KingPig> kingPigIterator = kingPigList.iterator();
         while (kingPigIterator.hasNext()) {
             KingPig kingPig = kingPigIterator.next();
@@ -224,6 +250,9 @@ public class Level3 extends ScreenAdapter {
                 break;
             }
         }
+
+        // Check collisions with Corporal Pigs
+        if (currentBird == null) return; // Exit if bird was destroyed in previous collision
 
         Iterator<CorporalPig> corporalPigIterator = corporalPigList.iterator();
         while (corporalPigIterator.hasNext()) {
@@ -266,6 +295,9 @@ public class Level3 extends ScreenAdapter {
         background.dispose();
         ground.dispose();
         slingshot.dispose();
+        for (Metal metal : new Metal[]{metal1, metal2, metal3, metal4, metal5, metal6}) {
+            if (metal != null) metal.dispose();
+        }
         for (Bird bird : birdList) bird.dispose();
         for (KingPig kingPig : kingPigList) kingPig.dispose();
         for (CorporalPig corporalPig : corporalPigList) corporalPig.dispose();

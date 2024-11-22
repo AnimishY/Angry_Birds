@@ -15,11 +15,9 @@ import com.badlogic.gdx.utils.Array;
 import com.mygame.angrybirds.Birds.Bird;
 import com.mygame.angrybirds.Birds.RedB;
 import com.mygame.angrybirds.Birds.ChuckB;
-import com.mygame.angrybirds.Birds.TerrenceB;
 import com.mygame.angrybirds.Material.Glass;
 import com.mygame.angrybirds.Material.Wood;
 import com.mygame.angrybirds.Pigs.CorporalPig;
-import com.mygame.angrybirds.Pigs.MinionPig;
 
 import java.util.Iterator;
 
@@ -65,7 +63,7 @@ public class Level2 extends ScreenAdapter {
         birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
 
         // Initialize bird list with multiple birds
-        birdList = new Array<>();
+        birdList = new Array<Bird>();
         birdList.add(new RedB(birdStartPosition.x, birdStartPosition.y));
         birdList.add(new ChuckB(birdStartPosition.x, birdStartPosition.y));
 
@@ -74,7 +72,7 @@ public class Level2 extends ScreenAdapter {
         currentBird = birdIterator.hasNext() ? birdIterator.next() : null;
 
         // Initialize pig list
-        pigList = new Array<>();
+        pigList = new Array<CorporalPig>();
         pigList.add(new CorporalPig(1120, GROUND_HEIGHT + 20));
         pigList.add(new CorporalPig(1210, GROUND_HEIGHT + 60));
 
@@ -132,7 +130,7 @@ public class Level2 extends ScreenAdapter {
         inputMultiplexer = new InputMultiplexer(stage, inputProcessor);
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        trajectoryPoints = new Array<>();
+        trajectoryPoints = new Array<Vector2>();
     }
 
     @Override
@@ -150,7 +148,7 @@ public class Level2 extends ScreenAdapter {
                 BirdCount--; // Decrease bird count when bird hits ground
                 if (BirdCount <= 0 && !pigList.isEmpty()) {
                     // No more birds and pigs still exist - game over
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                 }
             }
 
@@ -160,8 +158,8 @@ public class Level2 extends ScreenAdapter {
         // Manage bird progression and level end conditions
         if (pigList.isEmpty()) {
             levelEndDelay += delta;
-            if (levelEndDelay >= 2) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+            if (levelEndDelay >= 2 & PigCount <= 0) {
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, true));
             }
         }
 
@@ -177,7 +175,7 @@ public class Level2 extends ScreenAdapter {
                 } else {
                     currentBird = null; // No more birds
                     if (PigCount > 0) {
-                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score));
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                     }
                 }
             }
