@@ -18,12 +18,9 @@ public class PauseScreen extends ScreenAdapter {
     private int currentLevel; // Variable to hold the current level
 
     // create a font
-    // create a text for score
-    private int score;
 
     public PauseScreen(int currentLevel) {
         this.currentLevel = currentLevel; // Set the current level from which this screen is accessed
-        this.score = score;
     }
 
     @Override
@@ -55,7 +52,19 @@ public class PauseScreen extends ScreenAdapter {
         resumeButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Resume clicked!");
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level1()); // Resume the level
+                // Resume the level
+                // based on an if-else system
+                if (currentLevel == 1) {
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level1());
+                } else if (currentLevel == 2) {
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level2());
+                } else if (currentLevel == 3) {
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Level3());
+                } else {
+                    System.out.println("Invalid level!");
+                }
+
+                // Go back to the game screen
                 return true;
             }
             return false;
