@@ -67,7 +67,7 @@ public class Level1 extends ScreenAdapter {
         pauseButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Pause clicked!");
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(2));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(1));
                 return true;
             }
             return false;
