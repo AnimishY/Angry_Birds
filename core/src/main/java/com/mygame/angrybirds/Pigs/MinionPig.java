@@ -12,7 +12,7 @@ public class MinionPig {
 
     public MinionPig(float x, float y) {
         this.texture = new Texture(Gdx.files.internal("ch/MinionPig.png"));
-        this.health = 50;
+        this.health = 30;
         this.x = x;
         this.y = y;
     }

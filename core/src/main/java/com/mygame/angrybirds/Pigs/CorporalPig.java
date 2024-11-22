@@ -11,8 +11,8 @@ public class CorporalPig {
     private float x, y;
 
     public CorporalPig(float x, float y) {
-        this.texture = new Texture(Gdx.files.internal("ch/MinionPig.png"));
-        this.health = 100;
+        this.texture = new Texture(Gdx.files.internal("ch/CorporalPig.png"));
+        this.health = 50;
         this.x = x;
         this.y = y;
     }
