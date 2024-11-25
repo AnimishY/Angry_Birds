@@ -234,26 +234,55 @@ public class Level2 extends ScreenAdapter {
             glass1.dispose();
             glass1 = null;
             Score += 25;
+            CorporalpigList.get(0).takeDamage(currentBird.getDamage());
+            if (CorporalpigList.get(0).isDestroyed()) {
+                CorporalpigList.removeIndex(0);
+                PigCount--;
+                Score += 70;
+            }
         }
 
         if (wood1 != null && currentBird.getBounds().overlaps(wood1.getBounds())) {
             wood1.dispose();
             wood1 = null;
             Score += 50;
+            if (!MinionpigList.isEmpty()) {
+                MinionpigList.get(0).takeDamage(50);
+                if (MinionpigList.get(0).isDestroyed()) {
+                    MinionpigList.removeIndex(0);
+                    PigCount--;
+                    Score += 50;
+                }
+            }
         }
 
         if (wood2 != null && currentBird.getBounds().overlaps(wood2.getBounds())) {
             wood2.dispose();
             wood2 = null;
             Score += 50;
+            if (!MinionpigList.isEmpty()) {
+                MinionpigList.get(0).takeDamage(50);
+                if (MinionpigList.get(0).isDestroyed()) {
+                    MinionpigList.removeIndex(0);
+                    PigCount--;
+                    Score += 50;
+                }
+            }
         }
 
         if (wood3 != null && currentBird.getBounds().overlaps(wood3.getBounds())) {
             wood3.dispose();
             wood3 = null;
             Score += 50;
+            if (!MinionpigList.isEmpty()) {
+                MinionpigList.get(0).takeDamage(50);
+                if (MinionpigList.get(0).isDestroyed()) {
+                    MinionpigList.removeIndex(0);
+                    PigCount--;
+                    Score += 50;
+                }
+            }
         }
-
 
         // Check collisions with pigs
         Iterator<MinionPig> kingPigIterator = MinionpigList.iterator();

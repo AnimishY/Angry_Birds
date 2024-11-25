@@ -238,6 +238,16 @@ public class Level1 extends ScreenAdapter {
         if (redBird != null && redBird.getBounds().overlaps(glass1.getBounds())) {
             redBird.dispose();
             glass1.dispose();
+            // damage and dispose the pig also
+            minionPig.takeDamage(redBird.getDamage());
+            if (minionPig.isDestroyed()) {
+                minionPig.dispose();
+                PigCount--;
+                Score += 100;
+                minionPig = null;
+                // Start the 2-second delay before level end screen after the pig is killed
+                pigKillDelay = 0;
+            }
             redBird = null;
             glass1 = null;
             Score += 25;
@@ -246,6 +256,15 @@ public class Level1 extends ScreenAdapter {
         if (redBird != null && redBird.getBounds().overlaps(glass2.getBounds())) {
             redBird.dispose();
             glass2.dispose();
+            minionPig.takeDamage(redBird.getDamage());
+            if (minionPig.isDestroyed()) {
+                minionPig.dispose();
+                PigCount--;
+                Score += 100;
+                minionPig = null;
+                // Start the 2-second delay before level end screen after the pig is killed
+                pigKillDelay = 0;
+            }
             redBird = null;
             glass2 = null;
             Score += 25;
