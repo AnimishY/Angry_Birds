@@ -229,8 +229,14 @@ public class Level3 extends ScreenAdapter {
         // Check collisions with metallic obstacles
         for (Metal metal : new Metal[]{metal1, metal2, metal3, metal4, metal5, metal6}) {
             if (metal != null && currentBird.getBounds().overlaps(metal.getBounds())) {
-                metal.dispose();
+                metal = null; // Set to null instead of dispose() immediately
                 Score += 50;
+                if ((metal == metal1 || metal == metal2) && !corporalPigList.isEmpty()) {
+                    corporalPigList.get(0).takeDamage(currentBird.getDamage());
+                }
+                if ((metal == metal3 || metal == metal4 || metal == metal5 || metal == metal6) && !kingPigList.isEmpty()) {
+                    kingPigList.get(0).takeDamage(currentBird.getDamage());
+                }
             }
         }
 
@@ -295,9 +301,15 @@ public class Level3 extends ScreenAdapter {
         background.dispose();
         ground.dispose();
         slingshot.dispose();
-        for (Metal metal : new Metal[]{metal1, metal2, metal3, metal4, metal5, metal6}) {
-            if (metal != null) metal.dispose();
-        }
+
+        // Properly dispose of metal objects
+        if (metal1 != null) metal1.dispose();
+        if (metal2 != null) metal2.dispose();
+        if (metal3 != null) metal3.dispose();
+        if (metal4 != null) metal4.dispose();
+        if (metal5 != null) metal5.dispose();
+        if (metal6 != null) metal6.dispose();
+
         for (Bird bird : birdList) bird.dispose();
         for (KingPig kingPig : kingPigList) kingPig.dispose();
         for (CorporalPig corporalPig : corporalPigList) corporalPig.dispose();
