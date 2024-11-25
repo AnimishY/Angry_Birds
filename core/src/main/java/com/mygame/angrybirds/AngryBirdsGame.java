@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 
 /** Main game class for Angry Birds */
 public class AngryBirdsGame extends Game {
+    public static int userID = 1; // User ID to keep track of the player, 1 is pranshu , 0 is animish
     private SpriteBatch batch;
 
     @Override
