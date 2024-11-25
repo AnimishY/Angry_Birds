@@ -18,6 +18,8 @@ import com.mygame.angrybirds.Birds.ChuckB;
 import com.mygame.angrybirds.Material.Glass;
 import com.mygame.angrybirds.Material.Wood;
 import com.mygame.angrybirds.Pigs.CorporalPig;
+import com.mygame.angrybirds.Pigs.KingPig;
+import com.mygame.angrybirds.Pigs.MinionPig;
 
 import java.util.Iterator;
 
@@ -29,7 +31,8 @@ public class Level2 extends ScreenAdapter {
     private Array<Bird> birdList;
     private Iterator<Bird> birdIterator;
     private Bird currentBird;
-    private Array<CorporalPig> pigList;
+    private Array<CorporalPig> CorporalpigList;
+    private Array<MinionPig> MinionpigList;
     private boolean isDragging, birdLaunched;
     private Vector2 launchStart, launchEnd, birdStartPosition;
     private Array<Vector2> trajectoryPoints;
@@ -72,9 +75,11 @@ public class Level2 extends ScreenAdapter {
         currentBird = birdIterator.hasNext() ? birdIterator.next() : null;
 
         // Initialize pig list
-        pigList = new Array<CorporalPig>();
-        pigList.add(new CorporalPig(1120, GROUND_HEIGHT + 20));
-        pigList.add(new CorporalPig(1210, GROUND_HEIGHT + 60));
+        CorporalpigList = new Array<CorporalPig>();
+        CorporalpigList.add(new CorporalPig(1120, GROUND_HEIGHT + 20));
+
+        MinionpigList = new Array<MinionPig>();
+        MinionpigList.add(new MinionPig(1210, GROUND_HEIGHT + 60));
 
         stage = new Stage();
         Texture pauseButtonTexture = new Texture(Gdx.files.internal("ui/Pause.png"));
@@ -141,25 +146,22 @@ public class Level2 extends ScreenAdapter {
         if (!isDragging && currentBird != null) {
             currentBird.updatePosition(delta);
 
-            // Stop bird at ground level
             if (currentBird.getPosition().y <= GROUND_HEIGHT) {
                 currentBird.setPosition(currentBird.getPosition().x, GROUND_HEIGHT);
                 currentBird.launch(0, 0);
-                BirdCount--; // Decrease bird count when bird hits ground
-                if (BirdCount <= 0 && !pigList.isEmpty()) {
-                    // No more birds and pigs still exist - game over
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
+                BirdCount--;
+                if (BirdCount <= 0 && (!CorporalpigList.isEmpty() || !MinionpigList.isEmpty())) {
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
                 }
             }
 
             checkCollisions();
         }
 
-        // Manage bird progression and level end conditions
-        if (pigList.isEmpty()) {
+        if (MinionpigList.isEmpty() && CorporalpigList.isEmpty()) {
             levelEndDelay += delta;
-            if (levelEndDelay >= 2 & PigCount <= 0) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, true));
+            if (levelEndDelay >= 2) {
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, true));
             }
         }
 
@@ -173,9 +175,9 @@ public class Level2 extends ScreenAdapter {
                     birdLaunched = false;
                     timeElapsed = 0;
                 } else {
-                    currentBird = null; // No more birds
+                    currentBird = null;
                     if (PigCount > 0) {
-                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
                     }
                 }
             }
@@ -204,8 +206,11 @@ public class Level2 extends ScreenAdapter {
         }
 
 // Draw pigs
-        for (CorporalPig pig : pigList) {
-            pig.draw(batch);
+        for (MinionPig MinionPig : MinionpigList) {
+            MinionPig.draw(batch);
+        }
+        for (CorporalPig corporalPig : CorporalpigList) {
+            corporalPig.draw(batch);
         }
 
 // Draw trajectory
@@ -251,19 +256,35 @@ public class Level2 extends ScreenAdapter {
 
 
         // Check collisions with pigs
-        Iterator<CorporalPig> pigIterator = pigList.iterator();
-        while (pigIterator.hasNext()) {
-            CorporalPig pig = pigIterator.next();
+        Iterator<MinionPig> kingPigIterator = MinionpigList.iterator();
+        while (kingPigIterator.hasNext()) {
+            MinionPig kingPig = kingPigIterator.next();
+            if (currentBird.getBounds().overlaps(kingPig.getBounds())) {
+                kingPig.takeDamage(currentBird.getDamage());
+                if (kingPig.isDestroyed()) {
+                    kingPigIterator.remove();
+                    PigCount--;
+                    Score += 200;
+                }
+                currentBird.dispose();
+                currentBird = null;
+                break;
+            }
+        }
 
-            if (currentBird.getBounds().overlaps(pig.getBounds())) {
-                pig.takeDamage(currentBird.getDamage());
+        // Check collisions with Corporal Pigs
+        if (currentBird == null) return; // Exit if bird was destroyed in previous collision
 
-                if (pig.isDestroyed()) {
-                    pigIterator.remove();
-                    PigCount--; // Decrease pig count when pig is destroyed
+        Iterator<CorporalPig> corporalPigIterator = CorporalpigList.iterator();
+        while (corporalPigIterator.hasNext()) {
+            CorporalPig corporalPig = corporalPigIterator.next();
+            if (currentBird.getBounds().overlaps(corporalPig.getBounds())) {
+                corporalPig.takeDamage(currentBird.getDamage());
+                if (corporalPig.isDestroyed()) {
+                    corporalPigIterator.remove();
+                    PigCount--;
                     Score += 150;
                 }
-
                 currentBird.dispose();
                 currentBird = null;
                 break;
@@ -283,7 +304,11 @@ public class Level2 extends ScreenAdapter {
             bird.dispose();
         }
 
-        for (CorporalPig pig : pigList) {
+        for (CorporalPig pig : CorporalpigList) {
+            pig.dispose();
+        }
+
+        for (MinionPig pig : MinionpigList) {
             pig.dispose();
         }
 

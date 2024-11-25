@@ -35,10 +35,6 @@ public class UserProfile extends ScreenAdapter {
         float imageWidth = 1000; // Half of 500
         float imageHeight = 200; // Half of 100
 
-        // Load two center images
-        Texture image1Texture = new Texture(Gdx.files.internal("ui/User1.png")); // Ensure you have this texture
-        Texture image2Texture = new Texture(Gdx.files.internal("ui/User2.png")); // Ensure you have this texture
-
         // Position images in the center
         float image1XPosition = (screenWidth - imageWidth) / 4;
         float image1YPosition = (screenHeight - (imageHeight * 2 + 10)) / 2 + imageHeight; // Adjust for spacing
@@ -61,7 +57,44 @@ public class UserProfile extends ScreenAdapter {
         });
 
         stage.addActor(settingsButton);
+
+        // create user1 button
+        ImageButton user1Button = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/User1.png"))));
+        user1Button.setSize(300 , 100); // Set button si
+        user1Button.setPosition((screenWidth - 300) / 2, (screenHeight - (100 * 2 + 10)) / 2 + 100); // Position at the center
+        user1Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("User 1 clicked!");
+                // Handle user 1 click
+                AngryBirdsGame.userID = 1; // Set user ID to 1
+                // go back to home screen
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new HomePage());
+            }
+            return false;
+        });
+
+        stage.addActor(user1Button);
+
+
+        // for button 2
+        // create user2 button
+        ImageButton user2Button = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/User2.png"))));
+        user2Button.setSize(300 , 100); // Set button size
+        user2Button.setPosition((screenWidth - 300) / 2, (screenHeight - (100 * 2 + 10)) / 2); // Position at the center
+        user2Button.addListener(event -> {
+            if (event.isHandled()) {
+                System.out.println("User 2 clicked!");
+                // Handle user 2 click
+                AngryBirdsGame.userID = 0; // Set user ID to 2
+                // go back to home screen
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new HomePage());
+            }
+            return false;
+        });
+
+        stage.addActor(user2Button);
     }
+
 
     @Override
     public void render(float delta) {
@@ -75,13 +108,6 @@ public class UserProfile extends ScreenAdapter {
         float screenHeight = Gdx.graphics.getHeight();
 
         batch.draw(background, 0, 0, screenWidth, screenHeight); // Draw at (0,0) and scale to fit
-
-        // Draw center images with updated width and height
-        Texture image1Texture = new Texture(Gdx.files.internal("ui/User1.png"));
-        Texture image2Texture = new Texture(Gdx.files.internal("ui/User2.png"));
-
-        batch.draw(image1Texture, (screenWidth - 250) / 2, (screenHeight - (50 * 2 + 10)) / 2 + 50, 250, 50);
-        batch.draw(image2Texture, (screenWidth - 250) / 2, (screenHeight - (50 * 2 + 10)) / 2, 250, 50);
 
         batch.end();
 

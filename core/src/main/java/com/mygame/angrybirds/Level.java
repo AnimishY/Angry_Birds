@@ -19,12 +19,19 @@ public class Level {
     }
 
     public void writeLevelData(int levelnumber, boolean isCompleted) {
+        String filename;
+        if (AngryBirdsGame.userID == 1) {
+            filename = "userPranshu.csv";
+        } else {
+            filename = "userAnimish.csv";
+        }
+
         try {
             // Read existing data or create default data if file doesn't exist
             boolean[] levelStatuses = new boolean[5];
             try {
                 // Try to read existing file
-                List<String> lines = readAllLines(Paths.get("leveldata.csv"));
+                List<String> lines = readAllLines(Paths.get(filename));
                 for (int i = 0; i < lines.size(); i++) {
                     String[] parts = lines.get(i).split(",");
                     if (parts.length == 2) {
@@ -42,7 +49,7 @@ public class Level {
 
             FileWriter writer = null;
             try {
-                writer = new FileWriter("leveldata.csv");
+                writer = new FileWriter(filename);
                 for (int i = 0; i < levelStatuses.length; i++) {
                     writer.append(String.valueOf(i + 1))
                         .append(",")
@@ -61,10 +68,16 @@ public class Level {
 
     public static boolean readLevelData(int levelnumber) {
         // Read existing data or create default data if file doesn't exist
+        String filename;
+        if (AngryBirdsGame.userID == 1) {
+            filename = "userPranshu.csv";
+        } else {
+            filename = "userAnimish.csv";
+        }
         boolean[] levelStatuses = new boolean[5];
         try {
             // Try to read existing file
-            List<String> lines = readAllLines(Paths.get("leveldata.csv"));
+            List<String> lines = readAllLines(Paths.get(filename));
             for (int i = 0; i < lines.size(); i++) {
                 String[] parts = lines.get(i).split(",");
                 if (parts.length == 2) {
@@ -84,7 +97,13 @@ public class Level {
     // reset all levels to false
     public static void resetLevelData() {
         try {
-            FileWriter writer = new FileWriter("leveldata.csv");
+            String filename;
+            if (AngryBirdsGame.userID == 1) {
+                filename = "userPranshu.csv";
+            } else {
+                filename = "userAnimish.csv";
+            }
+            FileWriter writer = new FileWriter(filename);
             for (int i = 0; i < 5; i++) {
                 writer.append(String.valueOf(i + 1))
                     .append(",")

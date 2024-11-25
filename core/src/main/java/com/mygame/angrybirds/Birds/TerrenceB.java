@@ -2,9 +2,19 @@ package com.mygame.angrybirds.Birds;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.mygame.angrybirds.Physics.AimDetail;
 
 public class TerrenceB extends Bird{
+
+    public void draw(SpriteBatch batch) {
+        batch.draw(texture, x, y, 65, 65);
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, 65, 65);
+    }
 
     public TerrenceB(float x, float y) {
         this.texture = new Texture(Gdx.files.internal("ch/Terence.png"));

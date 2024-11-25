@@ -9,7 +9,7 @@ public class CorporalPig extends Pig {
 
     public CorporalPig(float x, float y) {
         this.texture = new Texture(Gdx.files.internal("ch/CorporalPig.png"));
-        this.health = 50;
+        this.health = 70;
         this.x = x;
         this.y = y;
     }
