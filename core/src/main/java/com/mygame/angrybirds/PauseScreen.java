@@ -16,6 +16,7 @@ public class PauseScreen extends ScreenAdapter {
     private Texture pauseBackground; // Background for the pause screen
     private Stage stage; // Stage for handling UI elements
     private int currentLevel; // Variable to hold the current level
+    AngryBirdsGame game = (AngryBirdsGame) Gdx.app.getApplicationListener();
 
     // create a font
 
@@ -25,6 +26,7 @@ public class PauseScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        game.startBackgroundMusic();
         batch = new SpriteBatch();
         pauseBackground = new Texture(Gdx.files.internal("angrybirds/PauseScreen_background.png")); // Load your pause background image.
 

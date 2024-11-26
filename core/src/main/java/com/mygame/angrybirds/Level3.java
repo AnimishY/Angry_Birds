@@ -19,6 +19,7 @@ import com.mygame.angrybirds.Birds.TerrenceB;
 import com.mygame.angrybirds.Material.Metal;
 import com.mygame.angrybirds.Pigs.CorporalPig;
 import com.mygame.angrybirds.Pigs.KingPig;
+import com.badlogic.gdx.audio.Sound;
 
 import java.util.Iterator;
 
@@ -42,16 +43,22 @@ public class Level3 extends ScreenAdapter {
     private static final float GROUND_HEIGHT = 100;
     private Metal metal1, metal2, metal3, metal4, metal5, metal6;
 
+    private Sound levelStartSound;
     // Counts of pigs and birds
     private int PigCount = 2;
     private int BirdCount = 3;
 
     @Override
     public void show() {
+        AngryBirdsGame game = (AngryBirdsGame) Gdx.app.getApplicationListener();
+        game.stopBackgroundMusic();
         batch = new SpriteBatch();
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
+
+        levelStartSound = Gdx.audio.newSound(Gdx.files.internal("sounds/game.wav"));
+        levelStartSound.play(0.2f); // Play the sound with 50% volume (adjust as needed)
 
         // Initialize metallic obstacles
         metal1 = new Metal(1050, GROUND_HEIGHT);

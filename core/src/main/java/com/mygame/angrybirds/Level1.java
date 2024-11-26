@@ -16,6 +16,9 @@ import com.mygame.angrybirds.Birds.RedB;
 import com.mygame.angrybirds.Pigs.MinionPig;
 import com.mygame.angrybirds.Material.Glass;
 
+import java.io.IOException;
+import com.badlogic.gdx.audio.Sound;
+
 public class Level1 extends ScreenAdapter {
     private SpriteBatch batch;
     private Texture background, ground, slingshot;
@@ -29,6 +32,8 @@ public class Level1 extends ScreenAdapter {
     private Array<Vector2> trajectoryPoints;
     private InputMultiplexer inputMultiplexer;
 
+    private Sound levelStartSound;
+
     private static final float GROUND_HEIGHT = 100; // New ground height constant
     private int PigCount = 1;
     private int BirdCount = 1;
@@ -38,10 +43,15 @@ public class Level1 extends ScreenAdapter {
 
     @Override
     public void show() {
+        AngryBirdsGame game = (AngryBirdsGame) Gdx.app.getApplicationListener();
+        game.stopBackgroundMusic();
         batch = new SpriteBatch();
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
+
+        levelStartSound = Gdx.audio.newSound(Gdx.files.internal("sounds/game.wav"));
+        levelStartSound.play(0.2f); // Play the sound with 50% volume (adjust as needed)
 
         // Initialize bird, pigs, and materials
         birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
@@ -64,9 +74,12 @@ public class Level1 extends ScreenAdapter {
 
         stage.addActor(pauseButton);
 
+
         pauseButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Pause clicked!");
+                saveGameState();
+                System.out.println("Save Game");
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(1));
                 return true;
             }
@@ -283,4 +296,17 @@ public class Level1 extends ScreenAdapter {
         if (glass1 != null) glass1.dispose();
         if (glass2 != null) glass2.dispose();
     }
+
+    public void saveGameState() {
+        try {
+            GameStateManager gameStateManager = new GameStateManager();
+            gameStateManager.initializeGameState(1, BirdCount, new int[]{minionPig.getHealth()},
+                new boolean[]{glass1 == null, glass2 == null});
+            gameStateManager.saveGameState("savedGameState.dat");
+            System.out.println("Game state saved successfully!");
+        } catch (IOException e) {
+            System.err.println("Error saving game state: " + e.getMessage());
+        }
+    }
+
 }

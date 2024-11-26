@@ -2,6 +2,7 @@ package com.mygame.angrybirds.Physics;
 
 import com.badlogic.gdx.math.Vector2;
 
+
 public class AimDetail {
     private float velocityX, velocityY;
     private float initialX, initialY;
@@ -45,3 +46,4 @@ public class AimDetail {
         return new Vector2(velocityX, velocityY - GRAVITY * time);
     }
 }
+

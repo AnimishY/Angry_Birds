@@ -18,10 +18,10 @@ import com.mygame.angrybirds.Birds.ChuckB;
 import com.mygame.angrybirds.Material.Glass;
 import com.mygame.angrybirds.Material.Wood;
 import com.mygame.angrybirds.Pigs.CorporalPig;
-import com.mygame.angrybirds.Pigs.KingPig;
 import com.mygame.angrybirds.Pigs.MinionPig;
 
 import java.util.Iterator;
+import com.badlogic.gdx.audio.Sound;
 
 public class Level2 extends ScreenAdapter {
     private SpriteBatch batch;
@@ -46,16 +46,22 @@ public class Level2 extends ScreenAdapter {
     private Wood wood2;
     private Wood wood3;
 
+    private Sound levelStartSound;
     // count of pigs and birds
     private int PigCount = 2;
     private int BirdCount = 2;
 
     @Override
     public void show() {
+        AngryBirdsGame game = (AngryBirdsGame) Gdx.app.getApplicationListener();
+        game.stopBackgroundMusic();
         batch = new SpriteBatch();
         background = new Texture(Gdx.files.internal("angrybirds/GameBG.png"));
         ground = new Texture(Gdx.files.internal("angrybirds/ground.png"));
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
+
+        levelStartSound = Gdx.audio.newSound(Gdx.files.internal("sounds/game.wav"));
+        levelStartSound.play(0.2f); // Play the sound with 50% volume (adjust as needed)
 
         // Fix: Initialize wood1 and glass1 as class fields
         wood1 = new Wood(1180, GROUND_HEIGHT);
@@ -151,7 +157,7 @@ public class Level2 extends ScreenAdapter {
                 currentBird.launch(0, 0);
                 BirdCount--;
                 if (BirdCount <= 0 && (!CorporalpigList.isEmpty() || !MinionpigList.isEmpty())) {
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                 }
             }
 
@@ -161,7 +167,7 @@ public class Level2 extends ScreenAdapter {
         if (MinionpigList.isEmpty() && CorporalpigList.isEmpty()) {
             levelEndDelay += delta;
             if (levelEndDelay >= 2) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, true));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, true));
             }
         }
 
@@ -177,7 +183,7 @@ public class Level2 extends ScreenAdapter {
                 } else {
                     currentBird = null;
                     if (PigCount > 0) {
-                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                     }
                 }
             }

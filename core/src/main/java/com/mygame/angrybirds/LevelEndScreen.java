@@ -16,6 +16,7 @@ public class LevelEndScreen extends ScreenAdapter {
     private Stage stage; // Stage for handling UI elements
     private int score; // Variable to hold the score
     private BitmapFont font; // Bitmap font for displaying text
+    AngryBirdsGame game = (AngryBirdsGame) Gdx.app.getApplicationListener();
 
     // Variable to hold the current level
     private int currentLevel;
@@ -34,6 +35,7 @@ public class LevelEndScreen extends ScreenAdapter {
 
     @Override
     public void show() {
+        game.startBackgroundMusic();
         batch = new SpriteBatch();
         background = new Texture(Gdx.files.internal("angrybirds/LevelEnd_background.png")); // Load your level end background image.
 
