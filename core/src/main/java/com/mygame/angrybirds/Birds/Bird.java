@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.mygame.angrybirds.Physics.AimDetail;
 
+
 public class Bird {
     Texture texture;
     public int health;
@@ -15,6 +16,16 @@ public class Bird {
     public float y;
     public AimDetail aimDetail;
     public boolean launched;
+
+    public Bird() {
+        this.health = 100;
+        this.damage = 0;
+        this.x = 0;
+        this.y = 0;
+        this.launched = false;
+        // Ensure AimDetail is initialized
+        this.aimDetail = new AimDetail(0,0); // Make sure AimDetail has a default constructor
+    }
 
     public void draw(SpriteBatch batch) {
         batch.draw(texture, x, y, 50, 50);
@@ -27,6 +38,10 @@ public class Bird {
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     public Vector2 getPosition() {

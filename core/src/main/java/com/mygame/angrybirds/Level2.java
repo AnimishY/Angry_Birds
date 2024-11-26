@@ -18,7 +18,6 @@ import com.mygame.angrybirds.Birds.ChuckB;
 import com.mygame.angrybirds.Material.Glass;
 import com.mygame.angrybirds.Material.Wood;
 import com.mygame.angrybirds.Pigs.CorporalPig;
-import com.mygame.angrybirds.Pigs.KingPig;
 import com.mygame.angrybirds.Pigs.MinionPig;
 
 import java.util.Iterator;
@@ -151,7 +150,7 @@ public class Level2 extends ScreenAdapter {
                 currentBird.launch(0, 0);
                 BirdCount--;
                 if (BirdCount <= 0 && (!CorporalpigList.isEmpty() || !MinionpigList.isEmpty())) {
-                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
+                    ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                 }
             }
 
@@ -161,7 +160,7 @@ public class Level2 extends ScreenAdapter {
         if (MinionpigList.isEmpty() && CorporalpigList.isEmpty()) {
             levelEndDelay += delta;
             if (levelEndDelay >= 2) {
-                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, true));
+                ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, true));
             }
         }
 
@@ -177,7 +176,7 @@ public class Level2 extends ScreenAdapter {
                 } else {
                     currentBird = null;
                     if (PigCount > 0) {
-                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(3, Score, false));
+                        ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new LevelEndScreen(2, Score, false));
                     }
                 }
             }
