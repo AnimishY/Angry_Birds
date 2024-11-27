@@ -47,8 +47,7 @@ public class Pig {
     }
 
     public void dispose() {
-        texture.dispose();
-        pigSound.dispose();  // Dispose of the pig sound
+        texture.dispose(); // Dispose of the pig sound
     }
 
     public Rectangle getBounds() {
