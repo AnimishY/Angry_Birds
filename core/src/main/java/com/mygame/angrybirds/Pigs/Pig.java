@@ -14,10 +14,6 @@ public class Pig {
     private Sound pigSound; // Sound for the pig noise
     private float timeSinceLastSound = 0f; // Timer for the sound
 
-    public Pig() {
-        // Load the pig sound
-        pigSound = Gdx.audio.newSound(Gdx.files.internal("sounds/pig.mp3"));
-    }
 
     public void takeDamage(int damage) {
         health -= damage;
