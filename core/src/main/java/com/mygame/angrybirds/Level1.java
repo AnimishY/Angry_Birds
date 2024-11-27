@@ -19,7 +19,7 @@ import com.mygame.angrybirds.Material.Glass;
 import java.io.IOException;
 import com.badlogic.gdx.audio.Sound;
 
-public class Level1 extends ScreenAdapter {
+public class Level1 extends ScreenAdapter implements GameStateManager.GameStateListener {
     private SpriteBatch batch;
     private Texture background, ground, slingshot;
     private ImageButton pauseButton;
@@ -51,7 +51,7 @@ public class Level1 extends ScreenAdapter {
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
         levelStartSound = Gdx.audio.newSound(Gdx.files.internal("sounds/game.wav"));
-        levelStartSound.play(0.2f); // Play the sound with 50% volume (adjust as needed)
+        levelStartSound.play(0.5f); // Play the sound with 50% volume (adjust as needed)
 
         // Initialize bird, pigs, and materials
         birdStartPosition = new Vector2(85, GROUND_HEIGHT + 52);
@@ -309,4 +309,13 @@ public class Level1 extends ScreenAdapter {
         }
     }
 
+    @Override
+    public void onLevelStateSaved(int levelNumber) {
+
+    }
+
+    @Override
+    public void onLevelStateLoaded(int levelNumber) {
+
+    }
 }

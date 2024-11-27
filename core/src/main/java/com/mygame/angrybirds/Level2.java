@@ -23,7 +23,7 @@ import com.mygame.angrybirds.Pigs.MinionPig;
 import java.util.Iterator;
 import com.badlogic.gdx.audio.Sound;
 
-public class Level2 extends ScreenAdapter {
+public class Level2 extends ScreenAdapter implements GameStateManager.GameStateListener  {
     private SpriteBatch batch;
     private Texture background, ground, slingshot;
     private Stage stage;
@@ -61,7 +61,7 @@ public class Level2 extends ScreenAdapter {
         slingshot = new Texture(Gdx.files.internal("angrybirds/slingshot.png"));
 
         levelStartSound = Gdx.audio.newSound(Gdx.files.internal("sounds/game.wav"));
-        levelStartSound.play(0.2f); // Play the sound with 50% volume (adjust as needed)
+        levelStartSound.play(0.5f); // Play the sound with 50% volume (adjust as needed)
 
         // Fix: Initialize wood1 and glass1 as class fields
         wood1 = new Wood(1180, GROUND_HEIGHT);
@@ -369,5 +369,15 @@ public class Level2 extends ScreenAdapter {
         float dx = start.x - end.x;
         float dy = start.y - end.y;
         return new Vector2(dx * power, dy * power);
+    }
+
+    @Override
+    public void onLevelStateSaved(int levelNumber) {
+
+    }
+
+    @Override
+    public void onLevelStateLoaded(int levelNumber) {
+
     }
 }

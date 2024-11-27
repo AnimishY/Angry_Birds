@@ -88,6 +88,11 @@ public class GameStateManager implements Serializable {
         this.levelNumber = levelNumber;
     }
 
+    public interface GameStateListener {
+        void onLevelStateSaved(int levelNumber);
+        void onLevelStateLoaded(int levelNumber);
+    }
+
     // Inner Class for Level-Specific State
     private static class LevelState implements Serializable {
         private static final long serialVersionUID = 1L;
