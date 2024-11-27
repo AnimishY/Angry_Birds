@@ -20,6 +20,7 @@ import com.mygame.angrybirds.Material.Wood;
 import com.mygame.angrybirds.Pigs.CorporalPig;
 import com.mygame.angrybirds.Pigs.MinionPig;
 
+import java.io.IOException;
 import java.util.Iterator;
 import com.badlogic.gdx.audio.Sound;
 
@@ -97,6 +98,9 @@ public class Level2 extends ScreenAdapter implements GameStateManager.GameStateL
         pauseButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Pause clicked!");
+                System.out.println("Game saved");
+                saveGameState();
+
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new PauseScreen(2));
                 return true;
             }
@@ -369,6 +373,16 @@ public class Level2 extends ScreenAdapter implements GameStateManager.GameStateL
         float dx = start.x - end.x;
         float dy = start.y - end.y;
         return new Vector2(dx * power, dy * power);
+    }
+
+    public void saveGameState() {
+        try {
+            GameStateManager gameStateManager = new GameStateManager();
+            gameStateManager.saveGameState("savedGameState.dat");
+            System.out.println("Game state saved successfully!");
+        } catch (IOException e) {
+            System.err.println("Error saving game state: " + e.getMessage());
+        }
     }
 
     @Override
