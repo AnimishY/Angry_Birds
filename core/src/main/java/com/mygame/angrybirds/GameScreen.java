@@ -22,8 +22,7 @@ public class GameScreen extends ScreenAdapter {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(gameBackground, 0, 0); // Draw the game background.
-        // Draw static game elements (birds and structures).
+        batch.draw(gameBackground, 0, 0);
         batch.end();
     }
 

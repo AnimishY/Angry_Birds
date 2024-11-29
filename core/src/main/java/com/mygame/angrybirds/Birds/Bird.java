@@ -24,8 +24,7 @@ public class Bird {
         this.y = 0;
         this.launched = false;
         // Ensure AimDetail is initialized
-        this.aimDetail = new AimDetail(0,0); // Make sure AimDetail has a default constructor
-    }
+        this.aimDetail = new AimDetail(0,0); }
 
     public void draw(SpriteBatch batch) {
         batch.draw(texture, x, y, 50, 50);

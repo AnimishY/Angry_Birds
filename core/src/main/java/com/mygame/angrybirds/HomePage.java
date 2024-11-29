@@ -13,40 +13,35 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class HomePage extends ScreenAdapter {
     private SpriteBatch batch;
-    private Texture homeBackground; // Background for the home screen
-    private Stage stage; // Stage for handling UI elements
-    private BitmapFont font; // Font for button labels
-    private GlyphLayout layout; // For measuring text dimensions
-    private ImageButton levelSelectButton; // Level Select button
-    private ImageButton settingsButton;      // Settings button with new source
-    private ImageButton exitButton;          // Exit button with new source
+    private Texture homeBackground;
+    private Stage stage;
+    private BitmapFont font;
+    private GlyphLayout layout;
+    private ImageButton levelSelectButton;
+    private ImageButton settingsButton;
+    private ImageButton exitButton;
 
     @Override
     public void show() {
         batch = new SpriteBatch();
-        homeBackground = new Texture(Gdx.files.internal("angrybirds/backmenu.jpg")); // Load your background image.
+        homeBackground = new Texture(Gdx.files.internal("angrybirds/backmenu.jpg"));
 
-        // Initialize the stage
         stage = new Stage();
         Gdx.input.setInputProcessor(stage); // Set input processor to the stage
 
-        // Load button textures
         Texture buttonTexture = new Texture(Gdx.files.internal("ui/LevelSelect_word.png"));
         TextureRegionDrawable buttonDrawable = new TextureRegionDrawable(buttonTexture);
 
-        // Load new textures for settings and exit buttons
         Texture settingsButtonTexture = new Texture(Gdx.files.internal("ui/Setting.png"));
         Texture exitButtonTexture = new Texture(Gdx.files.internal("ui/Exit.png"));
 
         TextureRegionDrawable settingsButtonDrawable = new TextureRegionDrawable(settingsButtonTexture);
         TextureRegionDrawable exitButtonDrawable = new TextureRegionDrawable(exitButtonTexture);
 
-        // Create buttons
         levelSelectButton = new ImageButton(buttonDrawable);  // Button for Level Select
         settingsButton = new ImageButton(settingsButtonDrawable); // Settings button with new image
         exitButton = new ImageButton(exitButtonDrawable);      // Exit button with new image
 
-        // Set button sizes
         float buttonWidth = 300;
         float buttonHeight = 200;
 
@@ -54,7 +49,6 @@ public class HomePage extends ScreenAdapter {
         settingsButton.setSize(buttonWidth, buttonHeight);
         exitButton.setSize(buttonWidth, buttonHeight);
 
-        // Position buttons with gaps between them
         float gap = 10; // Gap between buttons
         float totalWidth = (3 * buttonWidth) + (2 * gap); // Total width of all buttons plus gaps
         float startX = (Gdx.graphics.getWidth() - totalWidth) / 2; // Centering the buttons horizontally
@@ -63,16 +57,13 @@ public class HomePage extends ScreenAdapter {
         settingsButton.setPosition(startX + buttonWidth + gap, Gdx.graphics.getHeight() / 2 - 400);
         exitButton.setPosition(startX + 2 * (buttonWidth + gap), Gdx.graphics.getHeight() / 2 - 400);
 
-        // Add buttons to the stage
         stage.addActor(levelSelectButton);
         stage.addActor(settingsButton);
         stage.addActor(exitButton);
 
-        // Load a standard bold font (libGDX provides default fonts)
         font = new BitmapFont(); // This loads the default bitmap font
         layout = new GlyphLayout(); // For measuring text dimensions
 
-        // Add listeners for button clicks
         levelSelectButton.addListener(event -> {
             if (event.isHandled()) {
                 System.out.println("Level Select clicked!");
@@ -110,7 +101,6 @@ public class HomePage extends ScreenAdapter {
 
         batch.begin();
 
-        // Draw the background texture scaled to fit the screen dimensions
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
 
@@ -121,7 +111,6 @@ public class HomePage extends ScreenAdapter {
         stage.act(delta); // Update the stage
         stage.draw();     // Draw the stage and its actors (buttons)
 
-      // Call method to draw text on buttons
     }
 
 

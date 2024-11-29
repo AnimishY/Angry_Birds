@@ -11,8 +11,8 @@ public class Pig {
     public int health;
     public float x, y;
 
-    private Sound pigSound; // Sound for the pig noise
-    private float timeSinceLastSound = 0f; // Timer for the sound
+    private Sound pigSound;
+    private float timeSinceLastSound = 0f;
 
 
     public void takeDamage(int damage) {
@@ -20,13 +20,12 @@ public class Pig {
     }
 
     public void update(float deltaTime) {
-        // Increment the timer
+
         timeSinceLastSound += deltaTime;
 
-        // Check if 5 seconds have passed and play the sound
         if (timeSinceLastSound >= 5f) {
-            pigSound.play();  // Play the pig sound
-            timeSinceLastSound = 0f;  // Reset the timer
+            pigSound.play();
+            timeSinceLastSound = 0f;
         }
     }
 
@@ -47,7 +46,7 @@ public class Pig {
     }
 
     public void dispose() {
-        texture.dispose(); // Dispose of the pig sound
+        texture.dispose();
     }
 
     public Rectangle getBounds() {

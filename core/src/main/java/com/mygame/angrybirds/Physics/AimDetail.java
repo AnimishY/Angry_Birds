@@ -7,7 +7,7 @@ public class AimDetail {
     private float velocityX, velocityY;
     private float initialX, initialY;
     private float time;
-    private static final float GRAVITY = 50f;  // Increased gravity for more noticeable effect (cm/s²)
+    private static final float GRAVITY = 50f;
 
     public AimDetail(float initialVelocityX, float initialVelocityY) {
         this.velocityX = initialVelocityX;
@@ -16,15 +16,15 @@ public class AimDetail {
     }
 
     public void update(float deltaTime) {
-        // Accumulate time
+        // Accumulate time for each frame
         time += deltaTime;
     }
 
     public Vector2 getPosition(float deltaTime) {
-        // Calculate current horizontal position
+        // Calculating current horizontal position
         float x = initialX + velocityX * time;
 
-        // Calculate vertical position with gravity effect
+        // Calculating vertical position with gravity effect
         // y = initial_height + initial_vertical_velocity * time - 0.5 * gravity * time^2
         float y = initialY + velocityY * time - 0.5f * GRAVITY * time * time;
 

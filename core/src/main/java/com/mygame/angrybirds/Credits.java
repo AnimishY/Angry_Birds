@@ -22,14 +22,12 @@ public class Credits extends ScreenAdapter {
 
         // Initialize the stage
         stage = new Stage();
-        Gdx.input.setInputProcessor(stage); // Set input processor to the stage
+        Gdx.input.setInputProcessor(stage);
 
-        // Create and set up the back button
         backButton = new ImageButton(new TextureRegionDrawable(new Texture(Gdx.files.internal("ui/Setting.png"))));
-        backButton.setPosition(20, 170); // Positioning at bottom left
-        backButton.setSize(200, 100); // Set button size
+        backButton.setPosition(20, 170);
+        backButton.setSize(200, 100);
 
-        // Add listener for the back button click
         backButton.addListener(event -> {
             if (event.isHandled()) {
                 ((AngryBirdsGame) Gdx.app.getApplicationListener()).setScreen(new Settings()); // Go back to settings
@@ -38,7 +36,6 @@ public class Credits extends ScreenAdapter {
             return false; // Event not handled
         });
 
-        // Add the back button to the stage
         stage.addActor(backButton);
     }
 
@@ -51,14 +48,14 @@ public class Credits extends ScreenAdapter {
         batch.draw(creditsBackground, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight()); // Draw the credits background
         batch.end();
 
-        stage.act(delta); // Update the stage
-        stage.draw(); // Draw the stage and its actors (buttons)
+        stage.act(delta);
+        stage.draw();
     }
 
     @Override
     public void dispose() {
         batch.dispose();
         creditsBackground.dispose();
-        stage.dispose(); // Dispose of the stage and its resources
+        stage.dispose();
     }
 }

@@ -34,9 +34,7 @@ public class AngryBirdsGame extends Game {
     @Override
     public void dispose() {
         batch.dispose();
-        // Dispose of the music when the game is disposed
         backgroundMusic.dispose();
-        // If you have any textures loaded in screens, dispose them there instead.
     }
 
     // Stop music when level starts

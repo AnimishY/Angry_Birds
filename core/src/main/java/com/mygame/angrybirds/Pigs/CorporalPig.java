@@ -7,8 +7,8 @@ import com.badlogic.gdx.math.Rectangle;
 
 public class CorporalPig extends Pig {
 
-    private Texture minionTexture; // Texture for MinionPig
-    private boolean isTransformed = false; // Flag to track transformation
+    private Texture minionTexture;
+    private boolean isTransformed = false;
 
     public CorporalPig(float x, float y) {
         this.texture = new Texture(Gdx.files.internal("ch/CorporalPig.png"));
@@ -22,10 +22,9 @@ public class CorporalPig extends Pig {
     public void takeDamage(int damage) {
         super.takeDamage(damage);
 
-        // Check health and transform if necessary
         if (this.health < 30 && !isTransformed) {
             this.texture = minionTexture;
-            isTransformed = true; // Ensure transformation happens only once
+            isTransformed = true;
         }
     }
 
